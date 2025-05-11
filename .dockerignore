@@ -1,0 +1,28 @@
+# Git & CI
+.git/
+.github/
+.vscode/
+.idea/
+
+# Build & CMake artifacts
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.o
+*.out
+*.dSYM/
+*.log
+
+# Perf logs
+logs/
+perf_results*.md
+perf_output.txt
+
+# Doxygen output
+docs/html/
+docs/latex/
+
+# Ignore README previews
+*.pdf

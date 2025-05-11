@@ -1,0 +1,25 @@
+
+PROJECT_NAME           = "Monte Carlo Benchmarking Engine"
+PROJECT_BRIEF          = "Benchmarking various methods of Monte Carlo Simulations to estimate PI. Extended from a homework assignment from CSULB CECS 325 Systems Programming (Spring 2025 taught by Neal Terrell)."
+PROJECT_LOGO           = 
+OUTPUT_DIRECTORY       = docs
+GENERATE_HTML          = YES
+
+# Input
+INPUT = ./main.cpp ./benchmark.hpp ./pool.hpp ./montecarlo.hpp ./scripts/run_perf.sh
+RECURSIVE = NO
+
+# Output
+OUTPUT_DIRECTORY = docs
+
+# Extract everything
+EXTRACT_ALL = YES
+
+# Markdown support
+MARKDOWN_SUPPORT = YES
+EXTENSION_MAPPING = md=Markdown sh=Python
+
+# Show undocumented members too
+SHOW_INCLUDE_FILES = YES
+GENERATE_LATEX = NO
+GENERATE_HTML = YES

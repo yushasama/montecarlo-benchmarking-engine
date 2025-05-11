@@ -1,0 +1,26 @@
+name: CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+jobs:
+    build-test:
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v3
+
+        - name: Install dependencies
+          run: sudo apt update && sudo apt install -y clang cmake ninja-build
+
+        - name: Configure with CMake
+          run: cmake -G Ninja -B build -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_FLAGS="-O3"
+
+        - name: Build
+          run: ninja -C build
+
+        - name: Run Monte Carlo Dry Benchmark
+          run: ./build/montecarlo 10000 SIMD

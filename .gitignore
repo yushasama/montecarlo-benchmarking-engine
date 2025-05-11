@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+
+# Build files
+build/
+cmake-build-debug/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+*.o
+*.out
+*.dSYM/
+*.log
+
+# Perf
+logs/
+perf_results*.md
+perf_output.txt
+
+# IDE
+.vscode/
+.idea/
+
+# Doxygen
+docs/html/
+docs/latex/
