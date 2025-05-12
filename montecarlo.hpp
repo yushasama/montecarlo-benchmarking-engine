@@ -74,7 +74,7 @@ inline int countInsideCircle_AVX(__m256d x, __m256d y) {
     __m256d x2 = _mm256_mul_pd(x, x);
     __m256d y2 = _mm256_mul_pd(y, y);
     __m256d dist2 = _mm256_add_pd(x2, y2);
-    __m256d ones = _mm256_set_pd(1.0);
+    __m256d ones = _mm256_set1_pd(1.0);
     __m256d cmp = _mm256_cmp_pd(dist2, ones, _CMP_LE_OQ);
     return __builtin_popcount(_mm256_movemask_pd(cmp));
 }
