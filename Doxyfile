@@ -1,13 +1,13 @@
 
 PROJECT_NAME           = "Monte Carlo Benchmarking Engine"
-PROJECT_BRIEF          = "Benchmarking various methods of Monte Carlo Simulations to estimate PI. Extended from a homework assignment from CSULB CECS 325 Systems Programming (Spring 2025 taught by Neal Terrell)."
+PROJECT_BRIEF = "High-performance SIMD Monte Carlo engine (AVX2/NEON) with custom memory allocators and perf logging."
 PROJECT_LOGO           = 
 OUTPUT_DIRECTORY       = docs
 GENERATE_HTML          = YES
 
 # Input
-INPUT = ./main.cpp ./benchmark.hpp ./pool.hpp ./montecarlo.hpp ./scripts/run_perf.sh
-RECURSIVE = NO
+INPUT = README.md ./main.cpp ./benchmark.hpp ./pool.hpp ./montecarlo.hpp ./scripts/
+RECURSIVE = YES
 
 # Output
 OUTPUT_DIRECTORY = docs
@@ -16,6 +16,7 @@ OUTPUT_DIRECTORY = docs
 EXTRACT_ALL = YES
 
 # Markdown support
+USE_MDFILE_AS_MAINPAGE = README.md
 MARKDOWN_SUPPORT = YES
 EXTENSION_MAPPING = md=Markdown sh=Python
 
@@ -23,3 +24,7 @@ EXTENSION_MAPPING = md=Markdown sh=Python
 SHOW_INCLUDE_FILES = YES
 GENERATE_LATEX = NO
 GENERATE_HTML = YES
+
+HTML_STYLESHEET = docs/themes/doxygen-awesome-css/doxygen-awesome.css
+HTML_EXTRA_STYLESHEET = docs/custom.css
+HTML_COLORSTYLE = DARK

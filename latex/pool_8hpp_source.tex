@@ -1,0 +1,51 @@
+\doxysection{pool.\+hpp}
+\hypertarget{pool_8hpp_source}{}\label{pool_8hpp_source}\mbox{\hyperlink{pool_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ =======================================}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ pool.hpp\ -\/\ Fast\ aligned\ memory\ pool}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//\ =======================================}}
+\DoxyCodeLine{00026\ }
+\DoxyCodeLine{00027\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00028\ }
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ <cstddef>}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ <cstdlib>}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ <new>}}
+\DoxyCodeLine{00032\ \textcolor{preprocessor}{\#include\ <mutex>}}
+\DoxyCodeLine{00033\ \textcolor{preprocessor}{\#include\ <cassert>}}
+\DoxyCodeLine{00034\ }
+\DoxyCodeLine{00041\ \textcolor{keyword}{struct\ }\mbox{\hyperlink{structPoolAllocator_aea312b82f51ee90cba62b2792cdbc1ed}{PoolAllocator}}\ \{}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keywordtype}{char}*\ \mbox{\hyperlink{structPoolAllocator_a91e3406c402278177df135b1bb5aa853}{memory}};\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00043\ \ \ \ \ std::size\_t\ \mbox{\hyperlink{structPoolAllocator_a3c293e5a0d50ff1d974fa853a1b482d1}{capacity}};\ \ \ \ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00044\ \ \ \ \ std::size\_t\ \mbox{\hyperlink{structPoolAllocator_acba0b83cf09a385b28705e8cb3b92129}{offset}};\ }
+\DoxyCodeLine{00045\ }
+\DoxyCodeLine{00046\ \textcolor{keyword}{public}:}
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keyword}{explicit}\ \mbox{\hyperlink{structPoolAllocator_aea312b82f51ee90cba62b2792cdbc1ed}{PoolAllocator}}(\textcolor{keywordtype}{size\_t}\ bytes)\ \{}
+\DoxyCodeLine{00052\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structPoolAllocator_a91e3406c402278177df135b1bb5aa853}{memory}}\ =\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{char}*\textcolor{keyword}{>}(std::aligned\_alloc(64,\ bytes));}
+\DoxyCodeLine{00053\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structPoolAllocator_a3c293e5a0d50ff1d974fa853a1b482d1}{capacity}}\ =\ bytes;}
+\DoxyCodeLine{00054\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structPoolAllocator_acba0b83cf09a385b28705e8cb3b92129}{offset}}\ =\ 0;}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ assert(\mbox{\hyperlink{structPoolAllocator_a91e3406c402278177df135b1bb5aa853}{memory}}\ \&\&\ \textcolor{stringliteral}{"{}Failed\ to\ allocate\ aligned\ memory"{}});}
+\DoxyCodeLine{00056\ \ \ \ \ \}}
+\DoxyCodeLine{00057\ \ \ \ \ }
+\DoxyCodeLine{00061\ \ \ \ \ \mbox{\hyperlink{structPoolAllocator_ac4ac1fe039f85056fa928b7c74970ab1}{\string~PoolAllocator}}()\ \{}
+\DoxyCodeLine{00062\ \ \ \ \ \ \ \ \ std::free(\mbox{\hyperlink{structPoolAllocator_a91e3406c402278177df135b1bb5aa853}{memory}});}
+\DoxyCodeLine{00063\ \ \ \ \ \}}
+\DoxyCodeLine{00064\ }
+\DoxyCodeLine{00071\ \ \ \ \ \textcolor{keyword}{template}<\textcolor{keyword}{typename}\ T>}
+\DoxyCodeLine{00072\ \ \ \ \ T*\ \mbox{\hyperlink{structPoolAllocator_a9cb52856bd85f7be2b91b3fbd6e2ed82}{allocate}}(std::size\_t\ align\ =\ \textcolor{keyword}{alignof}(T))\ \{}
+\DoxyCodeLine{00073\ \ \ \ \ \ \ \ \ std::size\_t\ current\ =\ \mbox{\hyperlink{structPoolAllocator_acba0b83cf09a385b28705e8cb3b92129}{offset}};}
+\DoxyCodeLine{00074\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structPoolAllocator_acba0b83cf09a385b28705e8cb3b92129}{offset}}\ +=\ \textcolor{keyword}{sizeof}(T);\ \ \textcolor{comment}{//\ 64-\/byte\ spacing\ to\ avoid\ false\ sharing}}
+\DoxyCodeLine{00075\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00076\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (current\ +\ \textcolor{keyword}{sizeof}(T)\ >\ \mbox{\hyperlink{structPoolAllocator_a3c293e5a0d50ff1d974fa853a1b482d1}{capacity}})\ \textcolor{keywordflow}{return}\ \textcolor{keyword}{nullptr};}
+\DoxyCodeLine{00077\ }
+\DoxyCodeLine{00078\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{char}*\ ptr\ =\ \mbox{\hyperlink{structPoolAllocator_a91e3406c402278177df135b1bb5aa853}{memory}}\ +\ current;}
+\DoxyCodeLine{00079\ \ \ \ \ \ \ \ \ std::uintptr\_t\ aligned\ =\ (\textcolor{keyword}{reinterpret\_cast<}std::uintptr\_t\textcolor{keyword}{>}(ptr)\ +\ (align\ -\/\ 1))\ \&\ \string~(align\ -\/\ 1);}
+\DoxyCodeLine{00080\ \ \ \ \ \ \ \ \ }
+\DoxyCodeLine{00081\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{reinterpret\_cast<}T*\textcolor{keyword}{>}(aligned);}
+\DoxyCodeLine{00082\ \ \ \ \ \}}
+\DoxyCodeLine{00083\ }
+\DoxyCodeLine{00087\ \ \ \ \ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{structPoolAllocator_a69e10451b3ae614b73952c09f80813bb}{reset}}()\ \{}
+\DoxyCodeLine{00088\ \ \ \ \ \ \ \ \ \mbox{\hyperlink{structPoolAllocator_acba0b83cf09a385b28705e8cb3b92129}{offset}}\ =\ 0;}
+\DoxyCodeLine{00089\ \ \ \ \ \}}
+\DoxyCodeLine{00090\ \};}
+
+\end{DoxyCode}

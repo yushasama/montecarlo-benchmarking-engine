@@ -1,0 +1,159 @@
+\doxysection{montecarlo.\+hpp}
+\hypertarget{montecarlo_8hpp_source}{}\label{montecarlo_8hpp_source}\mbox{\hyperlink{montecarlo_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ ========================================}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ montecarlo.hpp\ -\/\ SIMD\ Monte\ Carlo\ Engine}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//\ ========================================}}
+\DoxyCodeLine{00035\ }
+\DoxyCodeLine{00036\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{preprocessor}{\#include\ "{}\mbox{\hyperlink{pool_8hpp}{pool.hpp}}"{}}}
+\DoxyCodeLine{00039\ \textcolor{preprocessor}{\#include\ <chrono>}}
+\DoxyCodeLine{00040\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00041\ \textcolor{preprocessor}{\#include\ <random>}}
+\DoxyCodeLine{00042\ \textcolor{preprocessor}{\#include\ <thread>}}
+\DoxyCodeLine{00043\ \textcolor{preprocessor}{\#include\ <memory>}}
+\DoxyCodeLine{00044\ }
+\DoxyCodeLine{00045\ \textcolor{preprocessor}{\#if\ defined(\_\_AVX2\_\_)}}
+\DoxyCodeLine{00046\ \textcolor{preprocessor}{\ \ \ \ \#define\ USE\_AVX}}
+\DoxyCodeLine{00047\ \textcolor{preprocessor}{\ \ \ \ \#include\ <immintrin.h>}}
+\DoxyCodeLine{00048\ \textcolor{preprocessor}{\#elif\ defined(\_\_ARM\_NEON)\ ||\ defined(\_\_ARM\_NEON\_\_)}}
+\DoxyCodeLine{00049\ \textcolor{preprocessor}{\ \ \ \ \#define\ USE\_NEON}}
+\DoxyCodeLine{00050\ \textcolor{preprocessor}{\ \ \ \ \#include\ <arm\_neon.h>}}
+\DoxyCodeLine{00051\ \textcolor{preprocessor}{\#else}}
+\DoxyCodeLine{00052\ \textcolor{preprocessor}{\ \ \ \ \#error\ "{}No\ SIMD\ instruction\ set\ supported.\ Compile\ with\ USE\_AVX\ or\ USE\_NEON"{}}}
+\DoxyCodeLine{00053\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00054\ }
+\DoxyCodeLine{00062\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{bool}\ \mbox{\hyperlink{montecarlo_8hpp_a8ba3d96fa4f2fb6a5d87f3c2b74f9acf}{isInsideCircle}}(\textcolor{keywordtype}{double}\ x,\ \textcolor{keywordtype}{double}\ y)\ \{}
+\DoxyCodeLine{00063\ \ \ \textcolor{keywordflow}{return}\ (x*x\ +\ y*y)\ <=\ 1.0;}
+\DoxyCodeLine{00064\ \}}
+\DoxyCodeLine{00065\ }
+\DoxyCodeLine{00066\ \textcolor{preprocessor}{\#ifdef\ USE\_AVX}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00073\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{int}\ countInsideCircle\_AVX(\_\_m256d\ x,\ \_\_m256d\ y)\ \{}
+\DoxyCodeLine{00074\ \ \ \ \ \_\_m256d\ x2\ =\ \_mm256\_mul\_pd(x,\ x);}
+\DoxyCodeLine{00075\ \ \ \ \ \_\_m256d\ y2\ =\ \_mm256\_mul\_pd(y,\ y);}
+\DoxyCodeLine{00076\ \ \ \ \ \_\_m256d\ dist2\ =\ \_mm256\_add\_pd(x2,\ y2);}
+\DoxyCodeLine{00077\ \ \ \ \ \_\_m256d\ ones\ =\ \_mm256\_set1\_pd(1.0);}
+\DoxyCodeLine{00078\ \ \ \ \ \_\_m256d\ cmp\ =\ \_mm256\_cmp\_pd(dist2,\ ones,\ \_CMP\_LE\_OQ);}
+\DoxyCodeLine{00079\ \ \ \ \ \textcolor{keywordflow}{return}\ \_\_builtin\_popcount(\_mm256\_movemask\_pd(cmp));}
+\DoxyCodeLine{00080\ \}}
+\DoxyCodeLine{00081\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00082\ }
+\DoxyCodeLine{00083\ \textcolor{preprocessor}{\#ifdef\ USE\_NEON}\textcolor{preprocessor}{}}
+\DoxyCodeLine{00090\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{int}\ countInsideCircle\_NEON(float64x2\_t\ x,\ float64x2\_t\ y)\ \{}
+\DoxyCodeLine{00091\ \ \ \ \ float64x2\_t\ x2\ =\ vmulq\_f64(x,\ x);}
+\DoxyCodeLine{00092\ \ \ \ \ float64x2\_t\ y2\ =\ vmulq\_f64(y,\ y);}
+\DoxyCodeLine{00093\ \ \ \ \ float64x2\_t\ dist2\ =\ vaddq\_f64(x2,\ y2);}
+\DoxyCodeLine{00094\ \ \ \ \ float64x2\_t\ ones\ =\ vdupq\_n\_f64(1.0);}
+\DoxyCodeLine{00095\ \ \ \ \ uint64x2\_t\ cmp\ =\ vcleq\_f64(dist2,\ ones);}
+\DoxyCodeLine{00096\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(vgetq\_lane\_u64(cmp,\ 0)\ !=\ 0)\ +\ \textcolor{keyword}{static\_cast<}\textcolor{keywordtype}{int}\textcolor{keyword}{>}(vgetq\_lane\_u64(cmp,\ 1)\ !=\ 0);}
+\DoxyCodeLine{00097\ \}}
+\DoxyCodeLine{00098\ \textcolor{preprocessor}{\#endif}}
+\DoxyCodeLine{00099\ }
+\DoxyCodeLine{00105\ \textcolor{keywordtype}{int}\ \mbox{\hyperlink{montecarlo_8hpp_a4d336a7f5eaca9962fe2268d2ccb99c0}{monteCarloPI\_SEQUENTIAl}}(\textcolor{keywordtype}{int}\ numberOfTrials)\ \{}
+\DoxyCodeLine{00106\ \ \ \ \ std::random\_device\ rd\ \{\};}
+\DoxyCodeLine{00107\ \ \ \ \ std::default\_random\_engine\ engine\ \{rd()\};}
+\DoxyCodeLine{00108\ \ \ \ \ std::uniform\_real\_distribution<double>\ darts\{0.0,\ 1.0\};}
+\DoxyCodeLine{00109\ }
+\DoxyCodeLine{00110\ \ \ \ \ \textcolor{keywordtype}{int}\ hits\ =\ 0;}
+\DoxyCodeLine{00111\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ numberOfTrials;\ ++i)\ \{}
+\DoxyCodeLine{00112\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ dartX\ =\ darts(engine);}
+\DoxyCodeLine{00113\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ dartY\ =\ darts(engine);}
+\DoxyCodeLine{00114\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{montecarlo_8hpp_a8ba3d96fa4f2fb6a5d87f3c2b74f9acf}{isInsideCircle}}(dartX,\ dartY))\ ++hits;}
+\DoxyCodeLine{00115\ \ \ \ \ \}}
+\DoxyCodeLine{00116\ \ \ \ \ \textcolor{keywordflow}{return}\ hits;}
+\DoxyCodeLine{00117\ \}}
+\DoxyCodeLine{00118\ }
+\DoxyCodeLine{00124\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{int}*\ \mbox{\hyperlink{montecarlo_8hpp_aa0669ac83bc2aef207563e5bc81554fd}{monteCarloPI\_HEAP}}(\textcolor{keywordtype}{int}\ numberOfTrials)\ \{}
+\DoxyCodeLine{00125\ \ \ \ \ std::random\_device\ rd\ \{\};}
+\DoxyCodeLine{00126\ \ \ \ \ std::default\_random\_engine\ engine\ \{rd()\};}
+\DoxyCodeLine{00127\ \ \ \ \ std::uniform\_real\_distribution<double>\ darts\{0.0,\ 1.0\};}
+\DoxyCodeLine{00128\ }
+\DoxyCodeLine{00129\ \ \ \ \ \textcolor{keywordtype}{int}\ hits\ =\ 0;}
+\DoxyCodeLine{00130\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ numberOfTrials;\ ++i)\ \{}
+\DoxyCodeLine{00131\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ dartX\ =\ darts(engine);}
+\DoxyCodeLine{00132\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ dartY\ =\ darts(engine);}
+\DoxyCodeLine{00133\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{montecarlo_8hpp_a8ba3d96fa4f2fb6a5d87f3c2b74f9acf}{isInsideCircle}}(dartX,\ dartY))\ ++hits;}
+\DoxyCodeLine{00134\ \ \ \ \ \}}
+\DoxyCodeLine{00135\ \ \ \ \ \textcolor{keywordflow}{return}\ \textcolor{keyword}{new}\ \textcolor{keywordtype}{int}\{hits\};}
+\DoxyCodeLine{00136\ \}}
+\DoxyCodeLine{00137\ }
+\DoxyCodeLine{00143\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{int}*\ \mbox{\hyperlink{montecarlo_8hpp_a786abc260c2bf9c7c8a46b0fe96cd254}{monteCarloPI\_POOL}}(\textcolor{keywordtype}{int}\ numberOfTrials)\ \{}
+\DoxyCodeLine{00144\ \ \ \ \ \textcolor{keyword}{thread\_local}\ \mbox{\hyperlink{structPoolAllocator}{PoolAllocator}}\ pool(64\ *\ 1024);}
+\DoxyCodeLine{00145\ \ \ \ \ pool.\mbox{\hyperlink{structPoolAllocator_a69e10451b3ae614b73952c09f80813bb}{reset}}();}
+\DoxyCodeLine{00146\ }
+\DoxyCodeLine{00147\ \ \ \ \ \textcolor{keywordtype}{int}*\ hits\ =\ pool.\mbox{\hyperlink{structPoolAllocator_a9cb52856bd85f7be2b91b3fbd6e2ed82}{allocate}}<\textcolor{keywordtype}{int}>();}
+\DoxyCodeLine{00148\ \ \ \ \ \textcolor{keywordflow}{if}\ (!hits)\ \{}
+\DoxyCodeLine{00149\ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}[ERROR]\ PoolAllocator\ ran\ out\ of\ memory!\(\backslash\)n"{}};}
+\DoxyCodeLine{00150\ \ \ \ \ \ \ \ \ std::exit(EXIT\_FAILURE);}
+\DoxyCodeLine{00151\ \ \ \ \ \}}
+\DoxyCodeLine{00152\ \ \ \ \ *hits\ =\ 0;}
+\DoxyCodeLine{00153\ }
+\DoxyCodeLine{00154\ \ \ \ \ std::random\_device\ rd;}
+\DoxyCodeLine{00155\ \ \ \ \ std::default\_random\_engine\ engine\{rd()\};}
+\DoxyCodeLine{00156\ \ \ \ \ std::uniform\_real\_distribution<double>\ darts\{0.0,\ 1.0\};}
+\DoxyCodeLine{00157\ }
+\DoxyCodeLine{00158\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ numberOfTrials;\ ++i)\ \{}
+\DoxyCodeLine{00159\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ dartX\ =\ darts(engine);}
+\DoxyCodeLine{00160\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ dartY\ =\ darts(engine);}
+\DoxyCodeLine{00161\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{montecarlo_8hpp_a8ba3d96fa4f2fb6a5d87f3c2b74f9acf}{isInsideCircle}}(dartX,\ dartY))\ ++(*hits);}
+\DoxyCodeLine{00162\ \ \ \ \ \}}
+\DoxyCodeLine{00163\ \ \ \ \ \textcolor{keywordflow}{return}\ hits;}
+\DoxyCodeLine{00164\ \}}
+\DoxyCodeLine{00165\ }
+\DoxyCodeLine{00171\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{int}*\ \mbox{\hyperlink{montecarlo_8hpp_a0c811477e219d96700d0006907ac27e1}{monteCarloPI\_SIMD}}(\textcolor{keywordtype}{int}\ numberOfTrials)\ \{}
+\DoxyCodeLine{00172\ \ \ \ \ \textcolor{keyword}{thread\_local}\ \mbox{\hyperlink{structPoolAllocator}{PoolAllocator}}\ pool(64\ *\ 1024);}
+\DoxyCodeLine{00173\ \ \ \ \ pool.\mbox{\hyperlink{structPoolAllocator_a69e10451b3ae614b73952c09f80813bb}{reset}}();}
+\DoxyCodeLine{00174\ }
+\DoxyCodeLine{00175\ \ \ \ \ \textcolor{keywordtype}{int}*\ hits\ =\ pool.\mbox{\hyperlink{structPoolAllocator_a9cb52856bd85f7be2b91b3fbd6e2ed82}{allocate}}<\textcolor{keywordtype}{int}>();}
+\DoxyCodeLine{00176\ \ \ \ \ \textcolor{keywordflow}{if}\ (!hits)\ \{}
+\DoxyCodeLine{00177\ \ \ \ \ \ \ \ \ std::cerr\ <<\ \textcolor{stringliteral}{"{}[ERROR]\ PoolAllocator\ ran\ out\ of\ memory!\(\backslash\)n"{}};}
+\DoxyCodeLine{00178\ \ \ \ \ \ \ \ \ std::exit(EXIT\_FAILURE);}
+\DoxyCodeLine{00179\ \ \ \ \ \}}
+\DoxyCodeLine{00180\ \ \ \ \ *hits\ =\ 0;}
+\DoxyCodeLine{00181\ }
+\DoxyCodeLine{00182\ \ \ \ \ \textcolor{keyword}{thread\_local}\ std::mt19937\_64\ engine(std::random\_device\{\}());}
+\DoxyCodeLine{00183\ \ \ \ \ std::uniform\_real\_distribution<double>\ dist(0.0,\ 1.0);}
+\DoxyCodeLine{00184\ }
+\DoxyCodeLine{00185\ \ \ \ \ \textcolor{keywordtype}{int}\ batch;}
+\DoxyCodeLine{00186\ \ \ \ \ \textcolor{keywordtype}{int}\ loopEnd;}
+\DoxyCodeLine{00187\ }
+\DoxyCodeLine{00188\ \textcolor{preprocessor}{\ \ \ \ \#ifdef\ USE\_AVX}}
+\DoxyCodeLine{00189\ \ \ \ \ batch\ =\ 4;}
+\DoxyCodeLine{00190\ \ \ \ \ \textcolor{keyword}{alignas}(32)\ \textcolor{keywordtype}{double}\ randX[batch],\ randY[batch];}
+\DoxyCodeLine{00191\ \ \ \ \ loopEnd\ =\ numberOfTrials\ -\/\ (numberOfTrials\ \%\ batch);}
+\DoxyCodeLine{00192\ }
+\DoxyCodeLine{00193\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ loopEnd;\ i+=\ batch)\ \{}
+\DoxyCodeLine{00194\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 0;\ j\ <\ batch;\ ++j)\ \{}
+\DoxyCodeLine{00195\ \ \ \ \ \ \ \ \ \ \ \ \ randX[j]\ =\ dist(engine);}
+\DoxyCodeLine{00196\ \ \ \ \ \ \ \ \ \ \ \ \ randY[j]\ =\ dist(engine);}
+\DoxyCodeLine{00197\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00198\ \ \ \ \ \ \ \ \ \_\_m256d\ dartX\ =\ \_mm256\_load\_pd(randX);}
+\DoxyCodeLine{00199\ \ \ \ \ \ \ \ \ \_\_m256d\ dartY\ =\ \_mm256\_load\_pd(randY);}
+\DoxyCodeLine{00200\ \ \ \ \ \ \ \ \ *hits\ +=\ countInsideCircle\_AVX(dartX,\ dartY);}
+\DoxyCodeLine{00201\ \ \ \ \ \}}
+\DoxyCodeLine{00202\ \textcolor{preprocessor}{\ \ \ \ \#elif\ defined(USE\_NEON)}}
+\DoxyCodeLine{00203\ \ \ \ \ batch\ =\ 2;}
+\DoxyCodeLine{00204\ \ \ \ \ \textcolor{keyword}{alignas}(16)\ \textcolor{keywordtype}{double}\ randX[batch],\ randY[batch];}
+\DoxyCodeLine{00205\ \ \ \ \ loopEnd\ =\ numberOfTrials\ -\/\ (numberOfTrials\ \%\ batch);}
+\DoxyCodeLine{00206\ }
+\DoxyCodeLine{00207\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ 0;\ i\ <\ loopEnd;\ i\ +=\ batch)\ \{}
+\DoxyCodeLine{00208\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ j\ =\ 0;\ j\ <\ batch;\ ++j)\ \{}
+\DoxyCodeLine{00209\ \ \ \ \ \ \ \ \ \ \ \ \ randX[j]\ =\ dist(engine);}
+\DoxyCodeLine{00210\ \ \ \ \ \ \ \ \ \ \ \ \ randY[j]\ =\ dist(engine);}
+\DoxyCodeLine{00211\ \ \ \ \ \ \ \ \ \}}
+\DoxyCodeLine{00212\ \ \ \ \ \ \ \ \ float64x2\_t\ dartX\ =\ vld1q\_f64(randX);}
+\DoxyCodeLine{00213\ \ \ \ \ \ \ \ \ float64x2\_t\ dartY\ =\ vld1q\_f64(randY);}
+\DoxyCodeLine{00214\ \ \ \ \ \ \ \ \ *hits\ +=\ countInsideCircle\_NEON(dartX,\ dartY);}
+\DoxyCodeLine{00215\ \ \ \ \ \}}
+\DoxyCodeLine{00216\ \textcolor{preprocessor}{\ \ \ \ \#endif\ }}
+\DoxyCodeLine{00217\ }
+\DoxyCodeLine{00218\ \ \ \ \ \textcolor{keywordflow}{for}\ (\textcolor{keywordtype}{int}\ i\ =\ loopEnd;\ i\ <\ numberOfTrials;\ ++i)\ \{}
+\DoxyCodeLine{00219\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ dartX\ =\ dist(engine);}
+\DoxyCodeLine{00220\ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ dartY\ =\ dist(engine);}
+\DoxyCodeLine{00221\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (\mbox{\hyperlink{montecarlo_8hpp_a8ba3d96fa4f2fb6a5d87f3c2b74f9acf}{isInsideCircle}}(dartX,\ dartY))\ ++(*hits);}
+\DoxyCodeLine{00222\ \ \ \ \ \}}
+\DoxyCodeLine{00223\ \ \ \ \ \textcolor{keywordflow}{return}\ hits;}
+\DoxyCodeLine{00224\ \}}
+
+\end{DoxyCode}

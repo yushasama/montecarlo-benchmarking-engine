@@ -1,0 +1,32 @@
+\doxysection{benchmark.\+hpp}
+\hypertarget{benchmark_8hpp_source}{}\label{benchmark_8hpp_source}\mbox{\hyperlink{benchmark_8hpp}{Go to the documentation of this file.}}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{comment}{//\ ========================================}}
+\DoxyCodeLine{00002\ \textcolor{comment}{//\ benchmark.hpp\ -\/\ Timing\ Utility\ Wrapper}}
+\DoxyCodeLine{00003\ \textcolor{comment}{//\ ========================================}}
+\DoxyCodeLine{00025\ }
+\DoxyCodeLine{00026\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \textcolor{preprocessor}{\#include\ <chrono>}}
+\DoxyCodeLine{00029\ \textcolor{preprocessor}{\#include\ <functional>}}
+\DoxyCodeLine{00030\ \textcolor{preprocessor}{\#include\ <iostream>}}
+\DoxyCodeLine{00031\ \textcolor{preprocessor}{\#include\ <string>}}
+\DoxyCodeLine{00032\ }
+\DoxyCodeLine{00044\ \textcolor{keyword}{inline}\ \textcolor{keywordtype}{void}\ \mbox{\hyperlink{benchmark_8hpp_a52240926a5ccd9a3af3c5b7c97a69900}{benchmark}}(\textcolor{keyword}{const}\ std::string\&\ name,\ \textcolor{keywordtype}{int}\ trials,\ std::function<\textcolor{keywordtype}{int}()>\ func)\ \{}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keyword}{auto}\ start\ =\ std::chrono::high\_resolution\_clock::now();}
+\DoxyCodeLine{00046\ }
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordtype}{int}\ hits\ =\ func();}
+\DoxyCodeLine{00048\ }
+\DoxyCodeLine{00049\ \ \ \ \ \textcolor{keyword}{auto}\ end\ =\ std::chrono::high\_resolution\_clock::now();}
+\DoxyCodeLine{00050\ }
+\DoxyCodeLine{00051\ \ \ \ \ \textcolor{keywordtype}{double}\ piEstimate\ =\ 4.0\ *\ hits\ /\ trials;}
+\DoxyCodeLine{00052\ \ \ \ \ \textcolor{keyword}{auto}\ elapsed\_ns\ =\ std::chrono::duration\_cast<std::chrono::nanoseconds>(end\ -\/\ start).count();}
+\DoxyCodeLine{00053\ }
+\DoxyCodeLine{00054\ \ \ \ \ std::cout\ <<\ name\ <<\ \textcolor{stringliteral}{"{}:\(\backslash\)n"{}}}
+\DoxyCodeLine{00055\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ \ Trials:\ "{}}\ <<\ trials\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}}}
+\DoxyCodeLine{00056\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ \ Hits:\ "{}}\ <<\ hits\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}}}
+\DoxyCodeLine{00057\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ \ Estimate:\ "{}}\ <<\ piEstimate\ <<\ \textcolor{stringliteral}{"{}\(\backslash\)n"{}}}
+\DoxyCodeLine{00058\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ <<\ \textcolor{stringliteral}{"{}\ \ Time:\ "{}}\ <<\ (elapsed\_ns\ /\ 1e9)\ <<\ \textcolor{stringliteral}{"{}s\ ("{}}\ <<\ elapsed\_ns\ <<\ \textcolor{stringliteral}{"{}\ ns)\(\backslash\)n"{}};}
+\DoxyCodeLine{00059\ \}}
+
+\end{DoxyCode}

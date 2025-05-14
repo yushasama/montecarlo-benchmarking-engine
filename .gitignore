@@ -1,27 +1,40 @@
-# macOS
-.DS_Store
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.log
 
-# Build files
+# C++ Build
 build/
-cmake-build-debug/
+*.o
+*.out
+*.a
+*.so
+*.dSYM/
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 Makefile
-*.o
-*.out
-*.dSYM/
-*.log
+compile_commands.json
 
-# Perf
-logs/
-perf_results*.md
-perf_output.txt
-
-# IDE
-.vscode/
-.idea/
-
-# Doxygen
+# Doxygen output
 docs/html/
 docs/latex/
+docs/themes/doxygen-awesome-css/.git/  # In case you cloned it
+
+# Data / Logs
+db/logs/
+db/db.parquet
+
+# Docker
+docker-compose.override.yml
+clickhouse_data/
+grafana_data/
+
+# Other
+*.swp
+*.bak
+*.DS_Store
+.env

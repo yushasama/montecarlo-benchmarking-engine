@@ -1,0 +1,26 @@
+SELECT
+  toStartOfMinute(Timestamp) AS time,     -- Grafana expects a `time` column
+  Method AS metric,                       -- “series” dimension
+
+  -- core perf numbers
+  avg(`Cycles/Trial`)      AS avg_cycles_per_trial,
+  avg(`Misses/Trial`)      AS avg_misses_per_trial,
+  avg(IPC)                 AS avg_ipc,
+  avg(`Wall Time (s)`)     AS avg_wall_time_s,
+
+  -- cache miss % per level
+  avg(cast(`L1 Misses` AS Float64) / nullIf(cast(`L1 Loads` AS Float64), 0) * 100) AS avg_l1_miss_pct,
+  avg(cast(`L2 Misses` AS Float64) / nullIf(cast(`L2 Loads` AS Float64), 0) * 100) AS avg_l2_miss_pct,
+  avg(cast(`L3 Misses` AS Float64) / nullIf(cast(`L3 Loads` AS Float64), 0) * 100) AS avg_l3_miss_pct,
+
+  -- overall cache miss %
+  avg(cast(`Cache Misses` AS Float64) / nullIf(cast(`Cache Loads` AS Float64), 0) * 100) AS avg_total_cache_miss_pct
+
+FROM perf_stats
+WHERE
+  Method IN ('SIMD','Sequential','Pool','Heap')
+  AND toDateTime(Timestamp) BETWEEN $__timeFrom() AND $__timeTo()
+GROUP BY
+  time, metric
+ORDER BY
+  time, metric

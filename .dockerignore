@@ -1,28 +1,29 @@
-# Git & CI
-.git/
-.github/
-.vscode/
-.idea/
+# Git & docs
+.git
+.gitignore
+docs/
+*.md
 
-# Build & CMake artifacts
+# Python cache
+__pycache__/
+*.pyc
+
+# Logs & local data
+db/logs/
+samples/
+results/
+*.parquet
+*.csv
+*.log
+
+# C++ build cache
 build/
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 Makefile
-*.o
-*.out
-*.dSYM/
-*.log
+compile_commands.json
 
-# Perf logs
-logs/
-perf_results*.md
-perf_output.txt
-
-# Doxygen output
-docs/html/
-docs/latex/
-
-# Ignore README previews
-*.pdf
+# OS noise
+*.swp
+*.DS_Store

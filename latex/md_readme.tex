@@ -1,0 +1,176 @@
+\chapter{Monte Carlo Benchmark Engine (AVX2 / NEON / Threaded)}
+\hypertarget{md_readme}{}\label{md_readme}\index{Monte Carlo Benchmark Engine (AVX2 / NEON / Threaded)@{Monte Carlo Benchmark Engine (AVX2 / NEON / Threaded)}}
+\label{md_readme_autotoc_md11}%
+\Hypertarget{md_readme_autotoc_md11}%
+
+
+\href{https://github.com/yushasama/montecarlo-benchmarking-engine/actions}{\texttt{ }}
+
+A high-\/performance SIMD Monte Carlo engine to estimate PI. written in C++17, benchmarked via {\ttfamily perf} and validated via CI.
+
+\begin{quote}
+🔬 Originally extended from a Spring 2025 CSULB CECS 325 (Systems Programming) assignment by Neal Terrell. \end{quote}
+
+
+\DoxyHorRuler{0}
+\hypertarget{md_readme_autotoc_md13}{}\doxysection{\texorpdfstring{🧩 Features}{🧩 Features}}\label{md_readme_autotoc_md13}
+
+\begin{DoxyItemize}
+\item {\bfseries{Execution Models}}\+:
+\begin{DoxyItemize}
+\item Sequential
+\item Heap-\/allocated
+\item Custom bump allocator (thread-\/local, reset-\/based)
+\item SIMD-\/accelerated (AVX2 / NEON)
+\end{DoxyItemize}
+\item {\bfseries{Memory Optimization}}\+:
+\begin{DoxyItemize}
+\item Preallocated, thread-\/local memory pools for allocation-\/free reuse
+\item Structure-\/of-\/\+Arrays layout for SIMD-\/friendly access patterns
+\item Optimized to reduce false sharing through thread-\/local state and separation of write paths
+\item Improved L1/\+L2 cache locality via contiguous memory and low-\/fragmentation allocation
+\end{DoxyItemize}
+\item {\bfseries{Performance Profiling (optional)}}\+:
+\begin{DoxyItemize}
+\item {\ttfamily perf stat} integration\+: IPC, cache/\+TLB misses, branch mispredictions
+\item Tracks cycles-\/per-\/trial and miss-\/per-\/trial metrics
+\end{DoxyItemize}
+\item {\bfseries{Logging \& Analysis}}\+:
+\begin{DoxyItemize}
+\item Zstandard-\/compressed Parquet output
+\item Auto-\/generated Markdown performance tables for quick inspection
+\end{DoxyItemize}
+\item {\bfseries{CI Tested}}\+: Git\+Hub Actions verifies builds and logs per commit
+\item {\bfseries{Cross-\/platform}}\+:
+\begin{DoxyItemize}
+\item ✅ Linux and mac\+OS supported
+\item ⚠️ Windows support (MSVC + Ninja / Min\+GW) is experimental
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md_readme_autotoc_md15}{}\doxysection{\texorpdfstring{🧠 Requirements}{🧠 Requirements}}\label{md_readme_autotoc_md15}
+
+\begin{DoxyItemize}
+\item CMake 3.\+15+
+\item Ninja
+\item Clang++ (recommended) or GCC 12+
+\item (Optional) {\ttfamily perf} (Linux only)
+\item (Optional) Python 3 with {\ttfamily polars}
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md_readme_autotoc_md17}{}\doxysection{\texorpdfstring{🔧 Build (Linux/mac\+OS/\+WSL)}{🔧 Build (Linux/mac\+OS/\+WSL)}}\label{md_readme_autotoc_md17}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cmake\ -\/G\ Ninja\ -\/B\ build\ -\/DCMAKE\_CXX\_COMPILER=clang++}
+\DoxyCodeLine{ninja\ -\/C\ build}
+\DoxyCodeLine{./build/montecarlo\ 100000000\ SIMD}
+
+\end{DoxyCode}
+
+
+You can also test other methods\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{./build/montecarlo\ 100000000\ Sequential}
+\DoxyCodeLine{./build/montecarlo\ 100000000\ Heap}
+\DoxyCodeLine{./build/montecarlo\ 100000000\ Pool}
+\DoxyCodeLine{./build/montecarlo\ 100000000\ SIMD}
+
+\end{DoxyCode}
+\hypertarget{md_readme_autotoc_md18}{}\doxysubsection{\texorpdfstring{🪟 Windows Support}{🪟 Windows Support}}\label{md_readme_autotoc_md18}
+\hypertarget{md_readme_autotoc_md19}{}\doxysubsubsection{\texorpdfstring{✅ WSL (Windows Subsystem for Linux)}{✅ WSL (Windows Subsystem for Linux)}}\label{md_readme_autotoc_md19}
+Fully supported. Use the same Linux instructions above. Allows {\ttfamily perf}, Python, and native benchmarking.\hypertarget{md_readme_autotoc_md20}{}\doxysubsubsection{\texorpdfstring{⚠️ MSVC (Developer Prompt)}{⚠️ MSVC (Developer Prompt)}}\label{md_readme_autotoc_md20}
+Partially supported. Build via Ninja\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cmake\ -\/G\ Ninja\ -\/B\ build\ -\/DCMAKE\_CXX\_FLAGS="{}/O2"{}}
+\DoxyCodeLine{ninja\ -\/C\ build}
+\DoxyCodeLine{build\(\backslash\)montecarlo.exe\ 100000000\ SIMD}
+
+\end{DoxyCode}
+
+
+Some allocators or SIMD intrinsics may require patching.\hypertarget{md_readme_autotoc_md21}{}\doxysubsubsection{\texorpdfstring{❌ Min\+GW}{❌ Min\+GW}}\label{md_readme_autotoc_md21}
+Not officially supported. May fail on memory alignment or {\ttfamily std\+::allocator\+\_\+traits} features.
+
+\DoxyHorRuler{0}
+\hypertarget{md_readme_autotoc_md23}{}\doxysection{\texorpdfstring{📊 Run Full Benchmark Script (Optional)}{📊 Run Full Benchmark Script (Optional)}}\label{md_readme_autotoc_md23}
+\begin{quote}
+This script uses Linux {\ttfamily perf} and logs results as Parquet + Markdown. \end{quote}
+
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{chmod\ +x\ scripts/run\_perf.sh}
+\DoxyCodeLine{./scripts/run\_perf.sh\ 100000000}
+
+\end{DoxyCode}
+
+
+By default, runs all methods (Sequential, Heap, Pool, SIMD).
+
+\DoxyHorRuler{0}
+\hypertarget{md_readme_autotoc_md25}{}\doxysection{\texorpdfstring{🤖 Git\+Hub Actions CI}{🤖 Git\+Hub Actions CI}}\label{md_readme_autotoc_md25}
+Every push or PR to {\ttfamily main} is automatically tested via Git\+Hub Actions\+:
+
+
+\begin{DoxyItemize}
+\item Builds using Clang + CMake + Ninja on Ubuntu
+\item Runs a dry smoke test for all methods\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{./build/montecarlo\ 10000\ Sequential}
+\DoxyCodeLine{./build/montecarlo\ 10000\ Heap}
+\DoxyCodeLine{./build/montecarlo\ 10000\ Pool}
+\DoxyCodeLine{./build/montecarlo\ 10000\ SIMD}
+
+\end{DoxyCode}
+
+\item CI ensures correctness, not benchmarking
+\end{DoxyItemize}
+
+CI badge and logs\+: \href{https://github.com/yushasama/montecarlo-benchmarking-engine/actions}{\texttt{ View Git\+Hub Actions}}
+
+\DoxyHorRuler{0}
+\hypertarget{md_readme_autotoc_md27}{}\doxysection{\texorpdfstring{🏁 Performance Snapshot (Optional)}{🏁 Performance Snapshot (Optional)}}\label{md_readme_autotoc_md27}
+\begin{quote}
+Generated via {\ttfamily scripts/run\+\_\+perf.\+sh}, parsed via {\ttfamily parse\+\_\+perf\+\_\+metrics.\+py}, and logged via {\ttfamily gen\+\_\+perf\+\_\+parquet\+\_\+logs.\+py} \end{quote}
+
+
+📦 {\bfseries{Parquet snapshot example\+:}}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{logs/batch\_c6d4dcc6\_2025-\/05-\/13\_17-\/47-\/41/perf\_results\_SIMD\_2025-\/05-\/13\_17-\/47-\/41\_c6d4dcc6.parquet}
+
+\end{DoxyCode}
+
+
+To view {\ttfamily .parquet} files visually, visit\+: \href{https://www.tablab.app}{\texttt{ https\+://www.\+tablab.\+app}} and drag the file in.
+
+Nice — if you’ve got a {\ttfamily samples/} folder with example {\ttfamily .parquet} and {\ttfamily .md} outputs for people to inspect, you can phrase it like this\+:
+
+\DoxyHorRuler{0}
+\hypertarget{md_readme_autotoc_md29}{}\doxysection{\texorpdfstring{📄 Markdown Table Summary}{📄 Markdown Table Summary}}\label{md_readme_autotoc_md29}
+A sample Markdown snapshot is included for reference\+: 👉 samples/perf\+\_\+results.md
+
+This contains a clean summary of benchmark results across all methods and is auto-\/generated by the pipeline.
+
+To inspect raw {\ttfamily .parquet} logs directly, explore files in\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{samples/*.parquet}
+
+\end{DoxyCode}
+
+
+You can also view them visually via \href{https://www.tablab.app}{\texttt{ https\+://www.\+tablab.\+app}} — just drag and drop any {\ttfamily .parquet} file.
+
+\DoxyHorRuler{0}
+ 

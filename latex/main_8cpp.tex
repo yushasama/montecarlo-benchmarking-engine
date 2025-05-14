@@ -1,0 +1,48 @@
+\doxysection{main.\+cpp File Reference}
+\hypertarget{main_8cpp}{}\label{main_8cpp}\index{main.cpp@{main.cpp}}
+
+
+CLI runner for benchmarking Monte Carlo methods.  
+
+
+{\ttfamily \#include "{}montecarlo.\+hpp"{}}\newline
+{\ttfamily \#include "{}benchmark.\+hpp"{}}\newline
+{\ttfamily \#include $<$chrono$>$}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$random$>$}\newline
+{\ttfamily \#include $<$thread$>$}\newline
+{\ttfamily \#include $<$unordered\+\_\+set$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{main_8cpp_a63dec59dd5535ac5bd39baca95bc59c0}\label{main_8cpp_a63dec59dd5535ac5bd39baca95bc59c0} 
+void {\bfseries print\+\_\+arch\+\_\+info} ()
+\item 
+\Hypertarget{main_8cpp_a0ddf1224851353fc92bfbff6f499fa97}\label{main_8cpp_a0ddf1224851353fc92bfbff6f499fa97} 
+int {\bfseries main} (int argc, char \texorpdfstring{$\ast$}{*}argv\mbox{[}$\,$\mbox{]})
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+CLI runner for benchmarking Monte Carlo methods. 
+
+Dispatches simulations by method (Sequential, Heap, Pool, SIMD).\hypertarget{main_8cpp_autotoc_md2}{}\doxysubsubsection{\texorpdfstring{Usage}{Usage}}\label{main_8cpp_autotoc_md2}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{./montecarlo\ \ \ \ \ \ \ \ \ \ \ \ \ \#\ Run\ all\ methods\ (default\ trials)}
+\DoxyCodeLine{./montecarlo\ 5000000\ \ \ \ \ \#\ Run\ all\ methods\ with\ 5M\ trials}
+\DoxyCodeLine{./montecarlo\ 1e7\ SIMD\ \ \ \ \#\ Run\ only\ SIMD}
+
+\end{DoxyCode}
+\hypertarget{main_8cpp_autotoc_md3}{}\doxysubsubsection{\texorpdfstring{CLI Arguments}{CLI Arguments}}\label{main_8cpp_autotoc_md3}
+
+\begin{DoxyItemize}
+\item {\ttfamily argv\mbox{[}1\mbox{]}} = number of trials (optional)
+\item {\ttfamily argv\mbox{[}2\mbox{]}} = method\+: Sequential, Heap, Pool, SIMD, or All (optional)
+\end{DoxyItemize}\hypertarget{main_8cpp_autotoc_md4}{}\doxysubsubsection{\texorpdfstring{Output}{Output}}\label{main_8cpp_autotoc_md4}
+Each benchmark logs\+:
+\begin{DoxyItemize}
+\item π estimate
+\item Runtime in seconds + nanoseconds 
+\end{DoxyItemize}

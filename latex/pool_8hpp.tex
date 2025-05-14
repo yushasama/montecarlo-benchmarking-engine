@@ -1,0 +1,42 @@
+\doxysection{pool.\+hpp File Reference}
+\hypertarget{pool_8hpp}{}\label{pool_8hpp}\index{pool.hpp@{pool.hpp}}
+
+
+Fast aligned bump allocator for high-\/performance simulations.  
+
+
+{\ttfamily \#include $<$cstddef$>$}\newline
+{\ttfamily \#include $<$cstdlib$>$}\newline
+{\ttfamily \#include $<$new$>$}\newline
+{\ttfamily \#include $<$mutex$>$}\newline
+{\ttfamily \#include $<$cassert$>$}\newline
+\doxysubsubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structPoolAllocator}{Pool\+Allocator}}
+\begin{DoxyCompactList}\small\item\em Fast aligned bump allocator for multithreaded simulations. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Fast aligned bump allocator for high-\/performance simulations. 
+
+Custom bump allocator used to replace {\ttfamily new} / {\ttfamily malloc} in hot paths.\hypertarget{pool_8hpp_autotoc_md8}{}\doxysubsubsection{\texorpdfstring{Features}{Features}}\label{pool_8hpp_autotoc_md8}
+
+\begin{DoxyItemize}
+\item Fixed-\/size buffer with pointer bumping
+\item 64-\/byte alignment for cache lines + AVX
+\item No deallocation — just reset to reuse
+\item Ideal for short-\/lived, per-\/thread workloads
+\end{DoxyItemize}\hypertarget{pool_8hpp_autotoc_md9}{}\doxysubsubsection{\texorpdfstring{Usage}{Usage}}\label{pool_8hpp_autotoc_md9}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\mbox{\hyperlink{structPoolAllocator}{PoolAllocator}}\ pool(64\ *\ 1024);}
+\DoxyCodeLine{MyStruct*\ ptr\ =\ pool.allocate<MyStruct>();}
+\DoxyCodeLine{pool.reset();}
+
+\end{DoxyCode}
+\hypertarget{pool_8hpp_autotoc_md10}{}\doxysubsubsection{\texorpdfstring{Requirements}{Requirements}}\label{pool_8hpp_autotoc_md10}
+
+\begin{DoxyItemize}
+\item C++17 or higher for {\ttfamily std\+::aligned\+\_\+alloc} 
+\end{DoxyItemize}

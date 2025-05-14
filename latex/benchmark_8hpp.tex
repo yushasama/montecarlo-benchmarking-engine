@@ -1,0 +1,64 @@
+\doxysection{benchmark.\+hpp File Reference}
+\hypertarget{benchmark_8hpp}{}\label{benchmark_8hpp}\index{benchmark.hpp@{benchmark.hpp}}
+
+
+Wall-\/clock + cycle-\/accurate benchmarking for performance profiling.  
+
+
+{\ttfamily \#include $<$chrono$>$}\newline
+{\ttfamily \#include $<$functional$>$}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$string$>$}\newline
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \mbox{\hyperlink{benchmark_8hpp_a52240926a5ccd9a3af3c5b7c97a69900}{benchmark}} (const std\+::string \&name, int trials, std\+::function$<$ int()$>$ func)
+\begin{DoxyCompactList}\small\item\em Benchmark wrapper that logs wall time and CPU cycles. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Wall-\/clock + cycle-\/accurate benchmarking for performance profiling. 
+
+Wraps a simulation function and logs\+:
+\begin{DoxyItemize}
+\item Wall time in nanoseconds + seconds
+\item CPU cycles (via rdtsc or cntvct\+\_\+el0)
+\item π estimate from number of hits
+\end{DoxyItemize}\hypertarget{benchmark_8hpp_autotoc_md0}{}\doxysubsubsection{\texorpdfstring{Features}{Features}}\label{benchmark_8hpp_autotoc_md0}
+
+\begin{DoxyItemize}
+\item Cross-\/platform CPU cycle counting (x86 + ARM)
+\item High-\/resolution {\ttfamily std\+::chrono} timer
+\item Printable results for logging or scripting
+\end{DoxyItemize}\hypertarget{benchmark_8hpp_autotoc_md1}{}\doxysubsubsection{\texorpdfstring{Example}{Example}}\label{benchmark_8hpp_autotoc_md1}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\mbox{\hyperlink{benchmark_8hpp_a52240926a5ccd9a3af3c5b7c97a69900}{benchmark}}(\textcolor{stringliteral}{"{}SIMD"{}},\ 10000000,\ [\&]()\ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{keywordflow}{return}\ \mbox{\hyperlink{montecarlo_8hpp_a4d336a7f5eaca9962fe2268d2ccb99c0}{monteCarloPI\_SEQUENTIAl}}(10000000);}
+\DoxyCodeLine{\});}
+
+\end{DoxyCode}
+ 
+
+\doxysubsection{Function Documentation}
+\Hypertarget{benchmark_8hpp_a52240926a5ccd9a3af3c5b7c97a69900}\index{benchmark.hpp@{benchmark.hpp}!benchmark@{benchmark}}
+\index{benchmark@{benchmark}!benchmark.hpp@{benchmark.hpp}}
+\doxysubsubsection{\texorpdfstring{benchmark()}{benchmark()}}
+{\footnotesize\ttfamily \label{benchmark_8hpp_a52240926a5ccd9a3af3c5b7c97a69900} 
+void benchmark (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{name}{, }\item[{int}]{trials}{, }\item[{std\+::function$<$ int()$>$}]{func}{}\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Benchmark wrapper that logs wall time and CPU cycles. 
+
+Times the execution of a function using both std\+::chrono. Outputs hit count and estimate of π. duration in seconds and nanoseconds
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the benchmark (e.\+g., "{}\+SIMD"{}) \\
+\hline
+{\em trials} & Total number of Monte Carlo trials \\
+\hline
+{\em func} & Function that returns number of hits \\
+\hline
+\end{DoxyParams}
