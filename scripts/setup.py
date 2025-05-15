@@ -28,21 +28,26 @@ def run_command(cmd: str):
 
 def wait_for_clickhouse():
     log("Waiting for ClickHouse...")
+
     for attempt in range(30):
         try:
             client = Client(host="localhost", port=9000, user="default")
             client.execute("SELECT 1")
             log("ClickHouse is ready.")
             return client
+        
         except Exception as e:
             log(f"Attempt {attempt+1}/30 failed: {e}")
             time.sleep(2)
+
     raise RuntimeError("ClickHouse did not start after 30 attempts.")
 
 def setup_clickhouse(client: Client):
     log("Setting up ClickHouse database and table.")
+
     client.execute("CREATE DATABASE IF NOT EXISTS benchmark")
     client.execute(generate_clickhouse_table())
+
     log("Schema loaded into ClickHouse.")
 
 def load_db_to_clickhouse(client: Client, db_path: Path):
@@ -53,18 +58,27 @@ def load_db_to_clickhouse(client: Client, db_path: Path):
     df = pl.read_parquet(db_path)
     df = safe_vector_cast(df, SCHEMA)
 
-    records = df.to_pandas().to_dict(orient="records")
+    records = df.to_dicts()
+    
     if not records:
         log("No records to insert.")
         return
+    
+    try:
+        client.execute("INSERT INTO benchmark.performance VALUES", records)
 
-    client.execute("INSERT INTO benchmark.performance VALUES", records)
+    except Exception as e:
+        err(f"Error inserting records into ClickHouse: {e}")
+        raise
+    
     log(f"Inserted {len(records)} records into ClickHouse.")
 
 def main():
     parser = argparse.ArgumentParser(description="Setup and load benchmark data into ClickHouse")
     parser.add_argument("--load-from-sample", action="store_true", help="Restore from db_sample.parquet")
     parser.add_argument("--load-from-db", action="store_true", help="Use existing db.parquet")
+    parser.add_argument("--load-only", action="store_true", help="Only load data into ClickHouse without setting up the database")
+   
     args = parser.parse_args()
 
     os.makedirs("db", exist_ok=True)
@@ -72,16 +86,20 @@ def main():
     os.makedirs("db/logs", exist_ok=True)
 
     run_command("docker-compose up -d")
+
     client = wait_for_clickhouse()
-    setup_clickhouse(client)
+
+    if not args.load_only:
+        setup_clickhouse(client)
 
     if args.load_from_sample:
-        log("Restoring from sample parquet file.")
+        log(f"Loading from sample data: {SAMPLE_PATH}")
+
         shutil.copy(SAMPLE_PATH, DB_PATH)
         load_db_to_clickhouse(client, DB_PATH)
 
     elif args.load_from_db:
-        log("Using existing db.parquet.")
+        log(f"Loading from existing data: {DB_PATH}")
         load_db_to_clickhouse(client, DB_PATH)
 
     else:

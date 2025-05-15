@@ -39,22 +39,22 @@ global_db_path = Path("db/db.parquet")
 # --- 1. Combine batch parquet files ---
 files = [f for f in batch_dir.glob("perf_results_*.parquet") if f.name != output_path.name]
 if not files:
-    print(f"[⚠️] No .parquet files found in {batch_dir}")
+    print(f"[ERROR] No .parquet files found in {batch_dir}")
     sys.exit(0)
 
 merged = pl.concat([pl.read_parquet(f) for f in files], how="vertical_relaxed").sort("Timestamp")
 merged.write_parquet(output_path, compression="zstd")
-print(f"[✅] Merged batch saved: {output_path}")
+print(f"[INFO] Merged batch saved: {output_path}")
 
 
 # --- 2. Append to global db.parquet ---
 if global_db_path.exists():
     db = pl.read_parquet(global_db_path)
     db = pl.concat([db, merged], how="vertical_relaxed")
-    print("[📦] Appended to existing db.parquet")
+    print("[INFO] Appended to existing db.parquet")
 else:
     db = merged
-    print("[📦] Created new db.parquet")
+    print("[INFO] Created new db.parquet")
 
 db.write_parquet(global_db_path, compression="zstd")
-print(f"[✅] Parquet db updated: {global_db_path}")
+print(f"[INFO] Parquet db updated: {global_db_path}")

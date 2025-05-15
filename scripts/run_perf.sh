@@ -74,6 +74,9 @@
 #   logs/batch_<BATCHID>/perf_results_<METHOD>_<TIMESTAMP>_<BATCHID>.parquet
 #   perf_results_all_<BATCHID>.parquet # All methods ran per sim
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+export PYTHONPATH="$ROOT_DIR:$PYTHONPATH"
+
 set -e
 
 # -------- Config --------
@@ -124,7 +127,7 @@ echo "$PERF_EVENTS" | tr ',' '\n' | sed 's/^/  - /'
 
 # -------- Run Each Method --------
 for METHOD in "${METHODS[@]}"; do
-    METHOD_TIMESTAMP=$(date "+%Y-%m-%d_%H-%M-%S")
+    METHOD_TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
     echo "[▶] Running: $METHOD"
 
     LOG_PATH="$LOG_DIR/perf_${METHOD}_${METHOD_TIMESTAMP}.csv"
@@ -140,9 +143,9 @@ for METHOD in "${METHODS[@]}"; do
     WALL_S=$(awk "BEGIN {printf \"%.6f\", $WALL_NS / 1000000000}")
 
     # Pull metrics into shell vars
-    eval "$(python3 ${SCRIPT_DIR}/../pipeline/parse_perf_metrics.py "$LOG_PATH" "$TRIALS")"
+    eval "$(python3 pipeline/parse_perf_metrics.py "$LOG_PATH" "$TRIALS")"
 
-    python3 "$SCRIPT_DIR/../pipeline/gen_perf_parquet_logs.py" \
+    python3 pipeline/gen_perf_parquet_logs.py \
         --out_path "$PERF_PARQUET" \
         --wall_time_s "$WALL_S" \
         --wall_time_ns "$WALL_NS" \
@@ -169,11 +172,11 @@ for METHOD in "${METHODS[@]}"; do
         --cycles_per_trial "$CYCLES_PER_TRIAL"
 done
 
-python3 "$SCRIPT_DIR/../pipeline/combine_batch_parquets.py" \
+python3 pipeline/combine_batch_parquets.py \
   "$LOG_DIR" \
   "$LOG_DIR/perf_results_all_${BATCHID}.parquet"
 
-python3 "$SCRIPT_DIR/../pipeline/write_to_clickhouse.py" \
+python3 pipeline/write_to_clickhouse.py \
   --batchid "$BATCHID"
   
 echo "[INFO] Simulation Finished:"

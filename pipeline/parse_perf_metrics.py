@@ -37,7 +37,7 @@
 #   Inside shell script:
 #     eval $(python3 "$SCRIPT_DIR/parse_perf_metrics.py" "$LOG_PATH" "$TRIALS")
 
-
+from pipeline.utils import safe_div
 import polars as pl
 import sys
 
@@ -80,12 +80,6 @@ values = {key: "NA" for key in field_map}
 for row in filtered.iter_rows(named=True):
     cli_key = event_to_key[row["event"]]
     values[cli_key] = row["clean_value"]
-
-def safe_div(n, d):
-    try:
-        return f"{float(n)/float(d):.4f}"
-    except:
-        return "NA"
 
 values["ipc"] = safe_div(values["instr"], values["cycles"])
 values["miss_per_trial"] = safe_div(values["cache_miss"], trials)

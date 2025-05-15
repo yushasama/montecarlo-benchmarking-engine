@@ -43,15 +43,13 @@
 # - File: logs/batch_<batchid>_<timestamp>/perf_results_<method>_<timestamp>_<batchid>.parquet
 # - Format: compressed `zstd` parquet with labeled fields and derived metrics
 
+from pipeline.utils import safe_vector_cast, safe_div_percent
 from pipeline.schema import SCHEMA
-from pipeline.utils import safe_vector_cast
 
 from pathlib import Path
 from glob import glob
 import polars as pl
 import argparse
-
-print("[DEBUG] gen_perf_parquet_logs.py started")
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Parse perf stats for Monte Carlo benchmarking.")
@@ -92,17 +90,6 @@ def parse_args():
     
     return parser.parse_args()
 
-def safe_div(numerator, denominator):
-    try:
-        if "NA" in (numerator, denominator):
-            return "NA"
-        num = float(numerator)
-        denom = float(denominator)
-
-        return round(num / denom, 4)
-    except:
-        return "NA"
-
 def update_parquet(args):
     matches = sorted(glob(f"db/logs/batch_{args.batchid}_*"))
     if not matches:
@@ -126,22 +113,22 @@ def update_parquet(args):
         "Wall Time (ns)": args.wall_time_ns,
         "Cache Loads": args.cache_loads,
         "Cache Misses": args.cache_miss,
-        "Cache Miss %": safe_div(args.cache_miss, args.cache_loads),
+        "Cache Miss %": safe_div_percent(args.cache_miss, args.cache_loads),
         "L1 Loads": args.l1_loads,
         "L1 Misses": args.l1_misses,
-        "L1 Miss %": safe_div(args.l1_misses, args.l1_loads),
+        "L1 Miss %": safe_div_percent(args.l1_misses, args.l1_loads),
         "L2 Loads": args.l2_loads,
         "L2 Misses": args.l2_misses,
-        "L2 Miss %": safe_div(args.l2_misses, args.l2_loads),
+        "L2 Miss %": safe_div_percent(args.l2_misses, args.l2_loads),
         "L3 Loads": args.l3_loads,
         "L3 Misses": args.l3_misses,
-        "L3 Miss %": safe_div(args.l3_misses, args.l3_loads),
+        "L3 Miss %": safe_div_percent(args.l3_misses, args.l3_loads),
         "TLB Loads": args.tlb_loads,
         "TLB Misses": args.tlb_misses,
-        "TLB Miss %": safe_div(args.tlb_misses, args.tlb_loads),
+        "TLB Miss %": safe_div_percent(args.tlb_misses, args.tlb_loads),
         "Branch Instructions": args.branch_instr,
         "Branch Misses": args.branch_misses,
-        "Branch Miss %": safe_div(args.branch_misses, args.branch_instr),
+        "Branch Miss %": safe_div_percent(args.branch_misses, args.branch_instr),
         "Misses/Trial": args.miss_per_trial,
         "Cycles/Trial": args.cycles_per_trial,
     }
@@ -151,25 +138,12 @@ def update_parquet(args):
     # 2. Create DataFrame and cast using schema
     df = pl.DataFrame([row])
 
-    print("[DEBUG] Raw row keys:", list(row.keys()))
-    print("[DEBUG] Raw row:", row)
-
-    try:
-        df = safe_vector_cast(df, SCHEMA)
-        print("[DEBUG] Schema cast completed.")
-    except Exception as e:
-        print("[ERROR] safe_vector_cast failed:", e)
-        print("[DEBUG] DataFrame columns:", df.columns)
-        print("[DEBUG] Schema fields:", list(SCHEMA.keys()))
-        exit(1)
-
-    print("[DEBUG] Final DataFrame before write:")
-    print(df)
+    df = safe_vector_cast(df, SCHEMA)
 
     df.write_parquet(parquet_path, compression="zstd")
+
     print(f"[INFO] Parquet saved: {parquet_path}")
 
-    # 3. Save with compression
-    df.write_parquet(parquet_path, compression="zstd")
-
-    print(f"[Info] Parquet saved: {parquet_path}")
+if __name__ == "__main__":
+    args = parse_args()
+    update_parquet(args)

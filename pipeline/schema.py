@@ -14,7 +14,6 @@ SCHEMA = {
     "L1 Misses": (pl.Int64, False),
     "L1 Miss %": (pl.Float64, False),
 
-
     # Nullable fields
     "L2 Loads": (pl.Int64, True),
     "L2 Misses": (pl.Int64, True),
@@ -23,7 +22,7 @@ SCHEMA = {
     "L3 Misses": (pl.Int64, True),
     "L3 Miss %": (pl.Float64, True),
 
-
+    
     "TLB Loads": (pl.Int64, False),
     "TLB Misses": (pl.Int64, False),
     "TLB Miss %": (pl.Float64, False),
