@@ -3,6 +3,6 @@ datasources:
   - name: ClickHouse
     type: clickhouse
     access: proxy
-    url: http://localhost:8123  # Replace with your actual ClickHouse server URL
+    url: http://localhost:8123
     jsonData:
       timeColumn: timestamp

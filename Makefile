@@ -47,5 +47,8 @@ init_demo:
 load_only:
 	python3 -m scripts.setup --load-from-db
 
+load_only_demo:
+	python3 -m scripts.setup --load-from-sample
+
 setup_clickhouse:
 	python3 -m scripts.setup --setup-clickhouse
