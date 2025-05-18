@@ -1,6 +1,10 @@
 import polars as pl
 
 SCHEMA = {
+    # Non-nullable fields
+    "Timestamp": (pl.Utf8, False),
+    "BatchID": (pl.Utf8, False),
+    "Method": (pl.Utf8, False),
     "Trials": (pl.Int64, False),
     "Cycles": (pl.Int64, False),
     "Instructions": (pl.Int64, False),

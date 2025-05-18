@@ -71,27 +71,32 @@ def load_db_to_clickhouse(client: Client, db_path: Path):
         err(f"Error inserting records into ClickHouse: {e}")
         raise
     
-    log(f"Inserted {len(records)} records into ClickHouse.")
 
 def main():
     parser = argparse.ArgumentParser(description="Setup and load benchmark data into ClickHouse")
-    parser.add_argument("--load-from-sample", action="store_true", help="Restore from db_sample.parquet")
-    parser.add_argument("--load-from-db", action="store_true", help="Use existing db.parquet")
-    parser.add_argument("--load-only", action="store_true", help="Only load data into ClickHouse without setting up the database")
-   
+    parser.add_argument("--load-from-sample", action="store_true", help="Setup and restore from db_sample.parquet")
+    parser.add_argument("--load-from-db", action="store_true", help="Setup and use existing db.parquet")
+    parser.add_argument("--docker-compose", action="store_true", help="Use Docker Compose to start ClickHouse & Grafana")
+    parser.add_argument("--setup-clickhouse", action="store_true", help="Setup ClickHouse database and table")
+
     args = parser.parse_args()
 
     os.makedirs("db", exist_ok=True)
     os.makedirs("samples", exist_ok=True)
     os.makedirs("db/logs", exist_ok=True)
 
-    run_command("docker-compose up -d")
+    
+    if args.docker_compose:
+        log("Setting up docker instance to be ready for Clickhouse database and Grafana.")
+        run_command("docker-compose up -d")
+        time.sleep(5)  # Wait for ClickHouse to start
 
     client = wait_for_clickhouse()
 
-    if not args.load_only:
+    if args.setup_clickhouse or args.docker_compose:
+        log("Setting up ClickHouse database and table.")
         setup_clickhouse(client)
-
+        
     if args.load_from_sample:
         log(f"Loading from sample data: {SAMPLE_PATH}")
 
@@ -101,10 +106,6 @@ def main():
     elif args.load_from_db:
         log(f"Loading from existing data: {DB_PATH}")
         load_db_to_clickhouse(client, DB_PATH)
-
-    else:
-        err("No load option provided. Use --load-from-sample or --load-from-db.")
-        log("Example: python3 -m scripts.setup --load-from-sample")
 
 if __name__ == "__main__":
     main()
