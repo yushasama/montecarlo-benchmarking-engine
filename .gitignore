@@ -37,3 +37,4 @@ grafana_data/
 *.bak
 *.DS_Store
 .env
+clickhouse_data/

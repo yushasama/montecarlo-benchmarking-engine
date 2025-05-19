@@ -55,10 +55,9 @@ A high-performance SIMD Monte Carlo engine to estimate PI. written in C++17, ben
 If you want to benchmark with `perf` and view results:
 
 * `perf` (Linux only)
-* `duckdb` (for fast Parquet reads)
+* `clickhousedb` (for Grafana ingest)
 * `polars` (for CSV parsing)
-* `sqlite3` (for Grafana ingest)
-* `grafana` + [SQLite plugin](https://grafana.com/grafana/plugins/frser-sqlite-datasource/) (for dashboard UI)
+* `grafana` for dashboard UI
 
 ---
 
@@ -75,7 +74,7 @@ pip install polars duckdb
 ## 🔧 Build (Linux/macOS/WSL)
 
 ```bash
-cmake -G Ninja -B build -DCMAKE_CXX_COMPILER=clang++
+cmake -G Ninja -B build
 ninja -C build
 ./build/montecarlo 100000000 SIMD
 ```

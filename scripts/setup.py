@@ -11,10 +11,7 @@ import polars as pl
 from pipeline.schema_to_clickhouse import generate_clickhouse_table
 from pipeline.schema import SCHEMA
 from pipeline.utils import safe_vector_cast
-
-DB_PATH = Path("db/db.parquet")
-SAMPLE_PATH = Path("samples/db_sample.parquet")
-
+from scripts.config import *
 
 def log(msg: str):
     print(f"[INFO] {msg}")
@@ -31,7 +28,8 @@ def wait_for_clickhouse():
 
     for attempt in range(30):
         try:
-            client = Client(host="localhost", port=9000, user="default")
+            log(f"Connecting to ClickHouse at {CLICKHOUSE_HOST}:{CLICKHOUSE_TCP_PORT} as user '{CLICKHOUSE_USER}'")
+            client = Client(host=CLICKHOUSE_HOST, port=CLICKHOUSE_TCP_PORT, user=CLICKHOUSE_USER, password=CLICKHOUSE_PASSWORD)
             client.execute("SELECT 1")
             log("ClickHouse is ready.")
             return client
@@ -65,6 +63,7 @@ def load_db_to_clickhouse(client: Client, db_path: Path):
         return
     
     try:
+        client.execute("TRUNCATE TABLE benchmark.performance")
         client.execute("INSERT INTO benchmark.performance VALUES", records)
 
     except Exception as e:
@@ -106,6 +105,9 @@ def main():
     elif args.load_from_db:
         log(f"Loading from existing data: {DB_PATH}")
         load_db_to_clickhouse(client, DB_PATH)
+
+    if args.load_from_sample or args.load_from_db:
+        run_command("docker restart grafana")
 
 if __name__ == "__main__":
     main()

@@ -42,8 +42,7 @@
 #include <thread>
 #include <memory>
 
-#if defined(__AVX2__)
-    #define USE_AVX
+#if defined(USE_AVX)
     #include <immintrin.h>
 #elif defined(__ARM_NEON) || defined(__ARM_NEON__)
     #define USE_NEON

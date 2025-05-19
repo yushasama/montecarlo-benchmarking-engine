@@ -3,31 +3,40 @@ services:
     image: clickhouse/clickhouse-server:latest
     container_name: clickhouse
     ports:
-      - "9000:9000"   # Native TCP (used by Python insert. High performance)
-      - "8123:8123"   # HTTP (used by Grafana + web clients)
+      - "${CLICKHOUSE_TCP_PORT_DOCKER}:${CLICKHOUSE_TCP_PORT_DOCKER}"
+      - "${CLICKHOUSE_HTTP_PORT_DOCKER}:${CLICKHOUSE_HTTP_PORT_DOCKER}"
     environment:
-      - CLICKHOUSE_USER=default
-      - CLICKHOUSE_PASSWORD=
+      - CLICKHOUSE_USER=${CLICKHOUSE_USER}
+      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
       - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
+      - CLICKHOUSE_TCP_PORT_DOCKER=${CLICKHOUSE_TCP_PORT_DOCKER}
+      - CLICKHOUSE_HTTP_PORT_DOCKER=${CLICKHOUSE_HTTP_PORT_DOCKER}
     volumes:
       - ./clickhouse_data:/var/lib/clickhouse
     ulimits:
       nofile:
         soft: 262144
         hard: 262144
+    env_file:
+      - .env
 
   grafana:
     build:
       context: ./grafana
     container_name: grafana
     ports:
-      - "3000:3000"
+      - "${GRAFANA_PORT}:3000"
     depends_on:
       - clickhouse
     volumes:
       - grafana-storage:/var/lib/grafana
       - ./grafana/dashboards:/var/lib/grafana/dashboards
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    image: grafana/grafana:latest
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-clickhouse-datasource
+    env_file:
+      - .env
 
 volumes:
   grafana-storage:

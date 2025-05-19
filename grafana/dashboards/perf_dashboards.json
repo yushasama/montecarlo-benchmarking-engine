@@ -1,47 +1,4 @@
 {
-  "__inputs": [
-    {
-      "name": "DS_CLICKHOUSE_MONTECARLO_ENGINE",
-      "label": "clickhouse_montecarlo_engine",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "grafana-clickhouse-datasource",
-      "pluginName": "ClickHouse"
-    }
-  ],
-  "__elements": {},
-  "__requires": [
-    {
-      "type": "panel",
-      "id": "barchart",
-      "name": "Bar chart",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "bargauge",
-      "name": "Bar gauge",
-      "version": ""
-    },
-    {
-      "type": "panel",
-      "id": "gauge",
-      "name": "Gauge",
-      "version": ""
-    },
-    {
-      "type": "grafana",
-      "id": "grafana",
-      "name": "Grafana",
-      "version": "11.6.1"
-    },
-    {
-      "type": "datasource",
-      "id": "grafana-clickhouse-datasource",
-      "name": "ClickHouse",
-      "version": "4.8.2"
-    }
-  ],
   "annotations": {
     "list": [
       {
@@ -61,13 +18,13 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": null,
+  "id": 2,
   "links": [],
   "panels": [
     {
       "datasource": {
         "type": "grafana-clickhouse-datasource",
-        "uid": "${DS_CLICKHOUSE_MONTECARLO_ENGINE}"
+        "uid": "PDEE91DDB90597936"
       },
       "fieldConfig": {
         "defaults": {
@@ -112,9 +69,13 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "${DS_CLICKHOUSE_MONTECARLO_ENGINE}"
+          },
           "editorType": "sql",
           "format": 1,
           "meta": {
@@ -130,11 +91,7 @@
           "pluginVersion": "4.8.2",
           "queryType": "table",
           "rawSql": "SELECT\n  Method,\n  avg(\"Wall Time (ns)\") / 1e6 AS \"Wall Time (ms)\"\nFROM benchmark.performance\nGROUP BY Method\nORDER BY \"Wall Time (ms)\" asc;",
-          "refId": "A",
-          "datasource": {
-            "type": "grafana-clickhouse-datasource",
-            "uid": "${DS_CLICKHOUSE_MONTECARLO_ENGINE}"
-          }
+          "refId": "A"
         }
       ],
       "title": "Average Execution Time (Wall Time)",
@@ -143,7 +100,7 @@
     {
       "datasource": {
         "type": "grafana-clickhouse-datasource",
-        "uid": "${DS_CLICKHOUSE_MONTECARLO_ENGINE}"
+        "uid": "PDEE91DDB90597936"
       },
       "fieldConfig": {
         "defaults": {
@@ -260,7 +217,7 @@
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 200
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -281,7 +238,7 @@
           },
           "pluginVersion": "4.8.2",
           "queryType": "timeseries",
-          "rawSql": "SELECT \n  Method,\n  AVG(COALESCE(`Cache Miss %`, 0)) AS \"Avg Cache Miss %\",\n  AVG(COALESCE(`L1 Miss %`, 0)) AS \"Avg L1 Cache Miss %\",\n  AVG(COALESCE(`L2 Miss %`, 0)) AS \"Avg L2 Cache Miss %\",\n  AVG(COALESCE(`L3 Miss %`, 0)) AS \"Avg L3 Cache Miss %\"\nFROM benchmark.performance\nGROUP BY Method\nORDER BY AVG(COALESCE(`Cache Miss %`, 0)) ASC;",
+          "rawSql": "SELECT \n  Method,\n  AVG(COALESCE(Cache Miss %, 0)) AS \"Avg Cache Miss %\",\n  AVG(COALESCE(L1 Miss %, 0)) AS \"Avg L1 Cache Miss %\",\n  AVG(COALESCE(L2 Miss %, 0)) AS \"Avg L2 Cache Miss %\",\n  AVG(COALESCE(L3 Miss %, 0)) AS \"Avg L3 Cache Miss %\"\nFROM benchmark.performance\nGROUP BY Method\nORDER BY AVG(COALESCE(Cache Miss %, 0)) ASC;",
           "refId": "A"
         }
       ],
@@ -292,7 +249,7 @@
     {
       "datasource": {
         "type": "grafana-clickhouse-datasource",
-        "uid": "${DS_CLICKHOUSE_MONTECARLO_ENGINE}"
+        "uid": "PDEE91DDB90597936"
       },
       "fieldConfig": {
         "defaults": {
@@ -424,7 +381,7 @@
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": 200
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
           "datasource": {
@@ -445,7 +402,7 @@
           },
           "pluginVersion": "4.8.2",
           "queryType": "timeseries",
-          "rawSql": "SELECT \n  Method,\n  AVG(COALESCE(`TLB Miss %`, 0)) AS \"Avg TLB Miss %\"\nFROM benchmark.performance\nGROUP BY Method\nORDER BY AVG(COALESCE(`TLB Miss %`, 0)) ASC;",
+          "rawSql": "SELECT \n  Method,\n  AVG(COALESCE(TLB Miss %, 0)) AS \"Avg TLB Miss %\"\nFROM benchmark.performance\nGROUP BY Method\nORDER BY AVG(COALESCE(TLB Miss %, 0)) ASC;",
           "refId": "A"
         }
       ],
@@ -456,7 +413,7 @@
     {
       "datasource": {
         "type": "grafana-clickhouse-datasource",
-        "uid": "${DS_CLICKHOUSE_MONTECARLO_ENGINE}"
+        "uid": "PDEE91DDB90597936"
       },
       "fieldConfig": {
         "defaults": {
@@ -510,9 +467,13 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.6.1",
+      "pluginVersion": "12.0.0",
       "targets": [
         {
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "${DS_CLICKHOUSE_MONTECARLO_ENGINE}"
+          },
           "editorType": "sql",
           "format": 1,
           "meta": {
@@ -528,11 +489,7 @@
           "pluginVersion": "4.8.2",
           "queryType": "table",
           "rawSql": "SELECT \n  Method,\n  AVG(\"Cycles/Trial\") as \"Average CPU Cycles\",\n  AVG(\"IPC\") as \"Average Instructions Per Cycle\"\nFROM benchmark.performance\nGROUP BY Method;",
-          "refId": "A",
-          "datasource": {
-            "type": "grafana-clickhouse-datasource",
-            "uid": "${DS_CLICKHOUSE_MONTECARLO_ENGINE}"
-          }
+          "refId": "A"
         }
       ],
       "title": "Pathwise CPU Compute Latency & Efficiency",
@@ -540,6 +497,8 @@
       "type": "bargauge"
     }
   ],
+  "preload": true,
+  "refresh": "5s",
   "schemaVersion": 41,
   "tags": [],
   "templating": {
@@ -547,12 +506,11 @@
   },
   "time": {
     "from": "2025-05-01T07:00:00.000Z",
-    "to": "3000-10-09T07:00:00.000Z"
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Benchmark Engine Profile",
-  "uid": "fem7a01zmll34d",
-  "version": 11,
-  "weekStart": ""
+  "uid": "fem7a01zmll34d1",
+  "version": 1
 }

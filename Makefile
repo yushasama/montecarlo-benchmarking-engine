@@ -20,8 +20,9 @@ nuke_docker:
 
 nuke_all:
 	docker-compose down -v
-	docker-compose up -d --build
 	rm -rf db/*
+	rm -rf clickhouse_data/*
+	rm -rf grafana/data/*
 
 nuke_data:
 	rm -rf db/*
