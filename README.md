@@ -16,6 +16,36 @@ Benchmarked using an in-house `perf` suite, and tested via CI.
 
 ---
 
+## 📚 Table of Contents
+
+1. [Features](#-features)
+2. [Core Optimization Strategies](#-optimization-strategies)
+   * [Distance Check Formula](#1-distance-check-formula)
+   * [SIMD](#2-simd-accelerated-trial-execution)
+   * [Bitmasking](#3-bitmasking-fast-hit-counting-with-no-branches)
+   * [Memory Pool Allocator](#4-memory-optimization-pool-allocator)
+   * [Thread-Local Design](#5-thread-local-everything-no-locks)
+3. [Real-World Analogy: HFT](#real-world-analogy-high-frequency-trading-hft)
+4. [Benchmark-Oriented Design Summary](#benchmark-oriented-design-summary)
+5. [Tips for Reviewers / Recruiters](#-tip-for-reviewers--recruiters)
+6. [Requirements](#requirements)
+7. [Setup Instructions](#setup-instructions)
+
+   * [Arch Linux](#-arch-linux)
+   * [Linux](#-linux)
+   * [macOS](#-macos-with-homebrew)
+   * [Windows (WSL2)](#-windows-wsl2--recommended)
+   * [Windows (MSVC)](#️-windows-msvc--experimental)
+8. [Building & Running](#building--running)
+9. [Benchmark Suite (Optional)](#-running-benchmark-suite-optional)
+10. [Docker + Grafana Integration](#-docker-optional-for-clickhouse--grafana-setup--data-visualization)
+11. [Perf Dashboard Setup (Docker + Makefile)](#️-perf-dashboard-setup-docker--makefile)
+12. [Environment Configuration](#-environment-configuration-env)
+13. [GitHub Actions CI](#-github-actions-ci)
+14. [Sample Benchmark Logs](#-performance-benchmark-snapshot)
+
+---
+
 ## 🧩 Features
 
 * **Execution Models**:
@@ -51,7 +81,7 @@ Benchmarked using an in-house `perf` suite, and tested via CI.
 
 ---
 
-### 🔧 Optimization Strategies
+### 🔧 Core Optimization Strategies
 
 This section breaks down the internal optimizations that power the engine, with special focus on SIMD, memory, and cache-sensitive design.
 
@@ -59,7 +89,7 @@ This section breaks down the internal optimizations that power the engine, with 
 
 ## Core Optimizations
 
-### 1. **Branchless Distance Check**
+### 1. **Distance Check Formula**
 
 Traditional distance check uses a square root:
 
@@ -359,7 +389,7 @@ If you want to use the full monitoring pipeline:
 
 ---
 
-## 🛠️ Docker + Makefile Workflow
+## 🛠️ Perf Dashboard Setup (Docker + Makefile)
 
 This project includes a `Makefile` to manage your local Docker environment for setting up Clickhouse and loading data, log ingestion + visualization via ClickHouse and Grafana.
 

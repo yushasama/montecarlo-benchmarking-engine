@@ -23,4 +23,7 @@ jobs:
           run: ninja -C build
 
         - name: Run Monte Carlo Dry Benchmark
+          run: ./build/montecarlo 10000 Sequential
+          run: ./build/montecarlo 10000 Heap
+          run: ./build/montecarlo 10000 Pool
           run: ./build/montecarlo 10000 SIMD
