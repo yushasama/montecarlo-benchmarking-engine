@@ -4,6 +4,7 @@ datasources:
     type: grafana-clickhouse-datasource
     access: proxy
     editable: true
+    uid: clickhouse-benchmark
 
     # If you prefer to use HTTP instead of TCP, uncomment the following line and comment the above line.
     # url: http://${CLICKHOUSE_HOST_DOCKER}:${CLICKHOUSE_HTTP_PORT_DOCKER}

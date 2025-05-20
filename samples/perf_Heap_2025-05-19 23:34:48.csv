@@ -1,0 +1,12 @@
+# started on Mon May 19 23:34:48 2025
+
+5881024636,,cycles:u,539846509,49.00,,
+7800118893,,instructions:u,543258942,49.00,1.33,insn per cycle
+289680,,cache-references:u,547192291,50.00,,
+80817,,cache-misses:u,548154278,50.00,27.90,of all cache refs
+301048254,,branch-instructions:u,548026621,50.00,,
+67096,,branch-misses:u,548933391,50.00,0.02,of all branches
+613844,,L1-dcache-loads:u,545520958,50.00,,
+430,,L1-dcache-load-misses:u,541587609,49.00,0.07,of all L1-dcache accesses
+2193,,dTLB-loads:u,540625622,49.00,,
+300,,dTLB-load-misses:u,540753279,49.00,13.68,of all dTLB cache accesses

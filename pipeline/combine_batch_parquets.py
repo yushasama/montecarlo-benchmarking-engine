@@ -1,29 +1,40 @@
 # ===========================================
 # combine_batch_parquets.py
 # ===========================================
-##
+#
 # @file combine_batch_parquets.py
 # @brief Combines multiple per-method parquet log files into a single file.
 #
-# Scans a given batch directory for all `perf_results_*.parquet` files,
-# excluding the target output file itself. Merges them into a single parquet
-# using vertical concat and sorts by "Timestamp".
+# Description:
+#   Scans a given batch directory for all `perf_results_*.parquet` files,
+#   excluding the output file itself. Merges them using vertical concat,
+#   sorts by "Timestamp", and saves the result as a single compressed parquet.
 #
-# Compression: zstd
+#   After merging, the result is also appended to a global historical
+#   file specified by `DB_PATH`, which is configured via `.env` and loaded
+#   in `scripts/config.py`.
 #
-# ## Usage:
-# ```bash
-# python3 combine_batch_parquets.py <batch_dir> <output_file>
-# ```
+# Compression:
+#   - All output parquet files are compressed using Zstandard (zstd).
 #
-# ## Arguments:
-# - `<batch_dir>`: Folder containing individual `.parquet` logs
-# - `<output_file>`: Path to final combined `.parquet` file
+# Usage:
+#   $ python3 combine_batch_parquets.py <batch_dir> <output_file>
 #
-# ## Output:
-# - A single merged parquet file
-# - Logs warning if no files are found in the batch directory
+# Arguments:
+#   <batch_dir>     Folder containing individual `.parquet` logs
+#   <output_file>   Path to final combined `.parquet` file
+#
+# Output:
+#   - A merged parquet file containing all batch results
+#   - Updated global Parquet DB with new rows appended
+#
+# Notes:
+#   - Global Parquet path is loaded from `.env` via `scripts/config.py`
+#   - This script uses `polars` for fast DataFrame operations and I/O
+#   - Intended to be run after `run_perf.sh` completes all method benchmarks
 
+
+from scripts.config import DB_PATH
 from pathlib import Path
 import polars as pl
 import sys
@@ -34,7 +45,7 @@ if len(sys.argv) != 3:
 
 batch_dir = Path(sys.argv[1])
 output_path = Path(sys.argv[2])
-global_db_path = Path("db/db.parquet")
+global_db_path = Path(DB_PATH)
 
 # --- 1. Combine batch parquet files ---
 files = [f for f in batch_dir.glob("perf_results_*.parquet") if f.name != output_path.name]

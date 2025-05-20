@@ -1,41 +1,40 @@
 # ===========================================
-# @file parse_perf_csv.py
-# @brief CLI flag generator from perf CSV output
+# parse_perf_metrics.py
 # ===========================================
 #
-# Parses `perf stat -x,` CSV logs and extracts performance metrics,
-# outputting them as CLI-ready `--key value` pairs for shell evaluation.
+# @file parse_perf_metrics.py
+# @brief CLI flag generator from perf CSV output (perf stat -x,).
 #
-# 💡 Output is designed for:
-#   eval $(python3 parse_perf_csv.py perf_SIMD.csv)
-# → sets: CYCLES=..., INSTR=..., IPC=..., etc.
+# Description:
+#   Parses Linux `perf stat` logs in CSV format and extracts a fixed set
+#   of performance metrics. Outputs these metrics as `--key value` shell
+#   arguments for downstream use in pipeline scripts or shell evaluation.
 #
-# === Vectorized Extraction (Fast, Clean) ===
+#   Metrics are mapped from perf event names (e.g., "cycles:u") into
+#   canonical CLI keys (e.g., CYCLES, IPC). Unsupported metrics are
+#   filled as "NA". Derived values like IPC and misses per trial are
+#   computed inline using safe arithmetic fallbacks.
 #
-# Traditional way (slow):
-#   for each metric:
-#       df.filter(event == name).select("value")  ❌ many scans
+# Output Format:
+#   CYCLES=123456789 INSTR=123456 IPC=1.23 ...
+#   (printed on a single line, space-separated, for eval)
 #
-# Our way (vectorized):
-#   - `df.filter(is_in(...))` filters all relevant events in one pass
-#   - `<not supported>` is detected via `.str.contains()` and normalized in one go
-#   - Results are built using `.iter_rows()` over the filtered subset
-#
-# ⚙️ Why it's faster:
-#   - 1 dataframe scan instead of N
-#   - All NA fallback handling done in a single `with_columns()` call
-#   - Polars-native ops → no Python loops or string parsing needed
-#
-# ⚠️ Notes:
-#   - L2/L3 events are marked `"NA"` by default unless supported on your CPU
-#   - Output order matches expected schema in `gen_perf_parquet_logs.py`
+# Example:
+#   $ eval $(python3 parse_perf_metrics.py perf_SIMD.csv 1000000)
+#   $ echo $CYCLES
 #
 # Usage:
-#   python3 parse_perf_metrics.py $LOG_PATH TRIALS
-#   → prints: --cycles 123456789 --ipc 1.23 ...
+#   python3 parse_perf_metrics.py <perf_log.csv> <num_trials>
 #
-#   Inside shell script:
-#     eval $(python3 "$SCRIPT_DIR/parse_perf_metrics.py" "$LOG_PATH" "$TRIALS")
+# Arguments:
+#   <perf_log.csv>    Path to perf CSV file (generated with `perf stat -x,`)
+#   <num_trials>      Number of simulation trials (for per-trial metrics)
+#
+# Notes:
+#   - L2/L3 metrics are set to "NA" unless manually filled in or enabled via raw PMU events.
+#   - This script is designed to be eval'd inline from a shell or used programmatically.
+#   - Output order matches expected schema in gen_perf_parquet_logs.py
+
 
 from pipeline.utils import safe_div
 import polars as pl

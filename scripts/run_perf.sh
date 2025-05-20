@@ -1,78 +1,84 @@
 #!/bin/bash
 # ===========================================
+# run_perf.sh
+# ===========================================
 # @file run_perf.sh
 # @brief Dockerized perf benchmarker for Monte Carlo simulation engine
-# ===========================================
 #
 # Benchmarks simulation methods (SIMD, Pool, Heap, etc.) using `perf stat`,
-# and logs system performance metrics to structured logs (Markdown, Parquet).
+# and logs system performance metrics to structured logs (CSV, Parquet).
 #
 # === Metrics Logged ===
 #
-# ▸ Core Execution
+# Core Execution
 #   - cycles:              Total CPU clock cycles consumed
 #   - instr:               Total instructions executed
 #   - ipc:                 Instructions per cycle (efficiency metric)
 #   - cycles_per_trial:    Avg CPU cycles used per simulation trial
 #
-# ▸ Time
+# Time
 #   - wall_time_s:         Real-world elapsed time (sec)
 #   - wall_time_ns:        Real-world elapsed time (nanoseconds, high-precision)
 #
-# ▸ Cache Accesses
+# Cache Accesses
 #   - l1_loads:            L1 data cache load attempts
 #   - l1_misses:           L1 cache load misses (ideal <5%)
-#   - l2_loads:            L2 cache load attempts
-#   - l2_misses:           L2 load misses
-#   - l3_loads:            Last-level (L3) cache loads
-#   - l3_misses:           L3 misses (fallback to RAM = slow)
-#   - cache_loads:         Aggregated cache loads (all levels)
+#   - l2_loads:            L2 cache load attempts (may not be supported)
+#   - l2_misses:           L2 cache load misses (may not be supported)
+#   - l3_loads:            Last-level (L3) cache loads (may not be supported)
+#   - l3_misses:           L3 misses (fallback to RAM = slow, may not be supported)
+#   - cache_loads:         Aggregated cache loads
 #   - cache_miss:          Aggregated cache misses
 #
-# ▸ Memory Paging
-#   - tlb_loads:           TLB accesses (virtual → physical addr translation)
-#   - tlb_misses:          TLB misses (page walk penalty; avoid if high)
+# Memory Paging
+#   - tlb_loads:           TLB accesses (address translation)
+#   - tlb_misses:          TLB misses (page walk penalty)
 #
-# ▸ Branch Prediction
-#   - branch_instr:        Total branch (if/loop/jump) instructions
-#   - branch_misses:       Branch mispredictions (pipeline flush = stall)
+# Branch Prediction
+#   - branch_instr:        Total branch instructions
+#   - branch_misses:       Branch mispredictions (pipeline flushes)
 #
-# ▸ Derived
+# Derived
 #   - miss_per_trial:      Cache+TLB misses per trial (normalized locality metric)
 #
-# ⚠️ L2/L3 CACHE STATS – IMPORTANT NOTE:
+# === Compatibility Notes (L2/L3 Caveats) ===
 #
-# Availability of L2/L3 performance events varies widely and depends on:
-#   - 🏭 CPU Vendor: Intel vs AMD
-#   - 🧠 Microarchitecture: (e.g., Intel Skylake, AMD Zen 3, Zen 4)
-#   - 🧰 Kernel Version & Perf PMU Driver Support
+# Some performance counters are not consistently available across systems:
+#   - Intel: L2/L3 counters usually available as `L2-dcache-*`, `LLC-*`
+#   - AMD:   L2/L3 counters may be missing (Zen 3/4); use `perf list` to verify
+#   - Virtual machines and containers may block PMU access
 #
-# 🔍 Why L2/L3 Might Be Missing or Misleading:
-#   - On **AMD Zen 4**, `perf list` often does **not expose L2 events** like `L2-dcache-loads` by default.
-#     You may need to use **raw event codes** or **kernel patches** for full access.
-#   - On **Intel CPUs**, many standard L2/L3 counters **do work**, but naming may differ (e.g., `LLC-*` for L3).
-#   - Virtualization or container isolation can also **block PMU access**.
+# Always validate support using:
+#   $ perf list | grep -i l2
+#   $ lscpu     # check microarchitecture
 #
-# ✅ What to Do:
-#   1. Run `perf list | grep -i l2` and `perf list | grep -i l3` to check availability.
-#   2. If benchmarking across vendors, expect **non-equivalent L2/L3 stats** and document accordingly.
+# === ClickHouse Integration ===
 #
-# ✅ TL;DR:
-#   L2/L3 metrics are **not portable**. Always **validate events per system** using:
-#     $ perf list
-#     $ lscpu    # for model name / microarchitecture
+# By default, results are inserted into ClickHouse at the end of each batch run.
+# To enable this:
+#   - You must first run: `make init` (first time setup) or `make up` (to start services)
+#   - Requires Docker and a running ClickHouse instance
+#
+# To skip ClickHouse insertion (e.g., CI, dry runs):
+#   ./run_perf.sh 50000000 SIMD insert_db=false
 #
 # === Usage ===
-#   ./run_perf.sh                      # All methods, default trials
-#   ./run_perf.sh 50000000            # All methods, custom trials
-#   ./run_perf.sh SIMD                # Single method, default trials
-#   ./run_perf.sh 50000000 Pool       # Custom trials + single method
+#   ./run_perf.sh                             # Run all methods with default trials, insert to DB
+#   ./run_perf.sh 50000000                    # All methods, custom trials
+#   ./run_perf.sh SIMD                        # Single method, default trials
+#   ./run_perf.sh 50000000 Pool               # Custom trials and single method
+#   ./run_perf.sh 50000000 SIMD insert_db=false  # Run without inserting to ClickHouse
 #
-# === Output ===
-#   logs/batch_<BATCHID>/perf_<METHOD>_<BATCHID>.csv # RAW perf stat output
-#   logs/batch_<BATCHID>/perf_<METHOD>_<TIMESTAMP>.parquet # Structured Parquet log
-#   logs/batch_<BATCHID>/perf_results_<METHOD>_<TIMESTAMP>_<BATCHID>.parquet
-#   perf_results_all_<BATCHID>.parquet # All methods ran per sim
+# === Output Files ===
+#   db/logs/batch_<BATCHID>/perf_<METHOD>_<TIMESTAMP>.csv
+#     → Raw perf stat output
+#
+#   db/logs/batch_<BATCHID>/perf_results_<METHOD>_<TIMESTAMP>_<BATCHID>.parquet
+#     → Parsed structured metrics for that method
+#
+#   db/logs/batch_<BATCHID>/perf_results_all_<BATCHID>.parquet
+#     → Combined metrics across all methods (for analysis or dashboarding)
+
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 export PYTHONPATH="$ROOT_DIR:$PYTHONPATH"
@@ -90,6 +96,13 @@ GLOBAL_TIMESTAMP=$(date "+%Y-%m-%d_%H-%M-%S")
 # -------- CLI Args --------
 ARG1="$1"
 ARG2="$2"
+$ARG3=$3
+
+INSERT_DB=true
+
+if [[ "$ARG3" == "insert_db=false" ]]; then
+    INSERT_DB=false
+fi
 
 if [[ -z "$ARG1" && -z "$ARG2" ]]; then
     TRIALS=$DEFAULT_TRIALS
@@ -176,9 +189,13 @@ python3 pipeline/combine_batch_parquets.py \
   "$LOG_DIR" \
   "$LOG_DIR/perf_results_all_${BATCHID}.parquet"
 
-python3 pipeline/write_to_clickhouse.py \
-  --batchid "$BATCHID"
-  
+if [ "$INSERT_DB" = true ]; then
+    python3 pipeline/insert_to_clickhouse.py \
+    --batchid "$BATCHID"
+else
+  echo "[INFO] Skipping ClickHouse insertion (insert_db=false)"
+fi
+
 echo "[INFO] Simulation Finished:"
 echo "     └─ Exported CSV & Parquet logs to  : $LOG_DIR"
 echo "     └─ Combined batch Parquet logs  : $LOG_DIR/perf_results_all_${BATCHID}.parquet"

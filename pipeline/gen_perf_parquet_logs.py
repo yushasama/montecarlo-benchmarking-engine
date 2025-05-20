@@ -1,7 +1,7 @@
 # ===========================================
 # gen_perf_parquet_logs.py
 # ===========================================
-##
+#
 # @file gen_perf_parquet_logs.py
 # @brief Generates perf benchmarking parquet from command-line arguments.
 #
@@ -42,6 +42,7 @@
 # ## Output:
 # - File: logs/batch_<batchid>_<timestamp>/perf_results_<method>_<timestamp>_<batchid>.parquet
 # - Format: compressed `zstd` parquet with labeled fields and derived metrics
+
 
 from pipeline.utils import safe_vector_cast, safe_div_percent
 from pipeline.schema import SCHEMA
@@ -98,8 +99,6 @@ def update_parquet(args):
 
     parquet_path = batch_dir / f"perf_results_{args.method}_{args.timestamp}_{args.batchid}.parquet"
 
-    print("[DEBUG] Wrote parquet to:", parquet_path)
-
     # 1. Build the raw row (match SCHEMA field names exactly)
     row = {
         "Timestamp": args.timestamp,
@@ -137,6 +136,11 @@ def update_parquet(args):
 
     # 2. Create DataFrame and cast using schema
     df = pl.DataFrame([row])
+    
+    # 3. Convert string timestamp to datetime
+    df = df.with_columns([
+    pl.col("Timestamp").str.strptime(pl.Datetime("ms"), "%Y-%m-%d %H:%M:%S", strict=False)
+    ])
 
     df = safe_vector_cast(df, SCHEMA)
 

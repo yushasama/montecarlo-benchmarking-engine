@@ -27,3 +27,7 @@ compile_commands.json
 # OS noise
 *.swp
 *.DS_Store
+
+# Other
+clickhouse_data/
+grafana-storage/

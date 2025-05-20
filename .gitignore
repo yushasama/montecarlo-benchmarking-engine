@@ -19,7 +19,6 @@ cmake_install.cmake
 compile_commands.json
 
 # Doxygen output
-docs/html/
 docs/latex/
 docs/themes/doxygen-awesome-css/.git/  # In case you cloned it
 
@@ -38,3 +37,4 @@ grafana_data/
 *.DS_Store
 .env
 clickhouse_data/
+grafana-storage/

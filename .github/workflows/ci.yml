@@ -17,7 +17,7 @@ jobs:
           run: sudo apt update && sudo apt install -y clang cmake ninja-build
 
         - name: Configure with CMake
-          run: cmake -G Ninja -B build"
+          run: cmake -G Ninja -B build
 
         - name: Build
           run: ninja -C build

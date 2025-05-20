@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['a_20bump_20allocator_0',['Why Use a Bump Allocator?',['../pool_8hpp.html#autotoc_md68',1,'']]],
+  ['academic_20origin_1',['Academic Origin',['../montecarlo_8hpp.html#autotoc_md118',1,'']]],
+  ['accelerated_20trial_20execution_20strong_2',['2. &lt;strong&gt;SIMD-Accelerated Trial Execution&lt;/strong&gt;',['../index.html#autotoc_md9',1,'']]],
+  ['actions_20ci_3',['🤖 GitHub Actions CI',['../index.html#autotoc_md54',1,'']]],
+  ['ai_4',['Game Engines (ECS, Physics, AI)',['../pool_8hpp.html#autotoc_md79',1,'']]],
+  ['alignment_20model_5',['Alignment Model',['../pool_8hpp.html#autotoc_md72',1,'']]],
+  ['allocate_6',['allocate',['../structPoolAllocator.html#a9cb52856bd85f7be2b91b3fbd6e2ed82',1,'PoolAllocator']]],
+  ['allocation_20models_7',['Memory Allocation Models',['../montecarlo_8hpp.html#autotoc_md99',1,'']]],
+  ['allocation_20tt_20montecarlopi_5fheap_20tt_8',['Heap Allocation (&lt;tt&gt;monteCarloPI_HEAP&lt;/tt&gt;)',['../montecarlo_8hpp.html#autotoc_md100',1,'']]],
+  ['allocation_20tt_20montecarlopi_5fpool_20tt_20tt_20simd_20tt_9',['Pool Allocation (&lt;tt&gt;monteCarloPI_POOL&lt;/tt&gt; / &lt;tt&gt;SIMD&lt;/tt&gt;)',['../montecarlo_8hpp.html#autotoc_md101',1,'']]],
+  ['allocator_10',['Allocator',['../montecarlo_8hpp.html#autotoc_md110',1,'2. Thread-Local Memory Allocator'],['../pool_8hpp.html#autotoc_md68',1,'Why Use a Bump Allocator?']]],
+  ['allocator_20strong_11',['4. &lt;strong&gt;Memory Optimization: Pool Allocator&lt;/strong&gt;',['../index.html#autotoc_md15',1,'']]],
+  ['analogy_3a_20high_20frequency_20trading_20hft_12',['Real-World Analogy: High-Frequency Trading (HFT)',['../index.html#autotoc_md24',1,'']]],
+  ['and_20branchless_20logic_13',['Why Bitmasks and Branchless Logic?',['../montecarlo_8hpp.html#autotoc_md96',1,'']]],
+  ['and_20parallelism_20model_14',['Thread Safety and Parallelism Model',['../montecarlo_8hpp.html#autotoc_md108',1,'']]],
+  ['applications_15',['Real-World Applications',['../pool_8hpp.html#autotoc_md76',1,'']]],
+  ['arch_20linux_16',['🐧 Arch Linux',['../index.html#autotoc_md33',1,'']]],
+  ['arguments_17',['CLI Arguments',['../main_8cpp.html#autotoc_md59',1,'']]],
+  ['arm64_18',['ARM64',['../index.html#autotoc_md11',1,'NEON (ARM64)'],['../montecarlo_8hpp.html#autotoc_md95',1,'NEON (ARM64)']]],
+  ['avoids_20fragmentation_20means_3a_19',['&quot;Fast, Reusable, Avoids Fragmentation&quot; Means:',['../montecarlo_8hpp.html#autotoc_md102',1,'']]],
+  ['avx2_20neon_20',['2. SIMD Vectorization (AVX2 &amp; NEON)',['../montecarlo_8hpp.html#autotoc_md93',1,'']]],
+  ['avx2_20x86_21',['AVX2 (x86)',['../montecarlo_8hpp.html#autotoc_md94',1,'']]],
+  ['avx2_20x86_2064_22',['AVX2 (x86-64)',['../index.html#autotoc_md10',1,'']]]
+];

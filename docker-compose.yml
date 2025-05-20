@@ -6,11 +6,8 @@ services:
       - "${CLICKHOUSE_TCP_PORT_DOCKER}:${CLICKHOUSE_TCP_PORT_DOCKER}"
       - "${CLICKHOUSE_HTTP_PORT_DOCKER}:${CLICKHOUSE_HTTP_PORT_DOCKER}"
     environment:
-      - CLICKHOUSE_USER=${CLICKHOUSE_USER}
-      - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
+      - CLICKHOUSE_RUN_AS_ROOT=1
       - CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1
-      - CLICKHOUSE_TCP_PORT_DOCKER=${CLICKHOUSE_TCP_PORT_DOCKER}
-      - CLICKHOUSE_HTTP_PORT_DOCKER=${CLICKHOUSE_HTTP_PORT_DOCKER}
     volumes:
       - ./clickhouse_data:/var/lib/clickhouse
     ulimits:
@@ -30,7 +27,7 @@ services:
       - clickhouse
     volumes:
       - grafana-storage:/var/lib/grafana
-      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/dashboards:/var/lib/grafana//dashboards
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
     image: grafana/grafana:latest
     environment:

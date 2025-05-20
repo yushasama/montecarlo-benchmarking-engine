@@ -1,8 +1,64 @@
+# ===========================================
+# schema_to_clickhouse.py
+# ===========================================
+#
+# @file schema_to_clickhouse.py
+# @brief Converts Polars schema to ClickHouse-compatible SQL
+#
+# Description:
+#   Converts a shared Python/Polars schema definition into a ClickHouse-compatible
+#   CREATE TABLE statement. This allows seamless integration between data preprocessing
+#   with Polars and persistent storage in ClickHouse.
+#
+#   The schema is defined as a dictionary mapping field names to (dtype, nullable) pairs.
+#   Supported input dtypes include both string representations (e.g., "Utf8") and
+#   Polars type objects or classes (e.g., pl.Int64).
+#
+# Example Output:
+#   CREATE TABLE IF NOT EXISTS benchmark.performance (
+#       `Method` String,
+#       `Cycles` Int64,
+#       `IPC` Float64,
+#       ...
+#   ) ENGINE = MergeTree()
+#   ORDER BY (Method, Timestamp);
+#
+# Features:
+#   - Handles both string-based and Polars-native dtype declarations
+#   - Adds Nullable(...) wrappers where needed
+#   - Raises errors for unsupported or unrecognized dtypes
+#   - Keeps output consistent with the expected schema in `pipeline.schema`
+#
+# Usage:
+#   $ python3 schema_to_clickhouse.py
+#   → prints CREATE TABLE SQL for use in ClickHouse CLI
+#
+# Schema format expected:
+#   SCHEMA = {
+#       "FieldName": (pl.Int64, False),
+#       "OtherField": ("Utf8", True),
+#       ...
+#   }
+#
+
+
 from pipeline.schema import SCHEMA
 import polars as pl
 
 def polars_to_clickhouse_dtype(dtype, nullable):
-    # Step 1: Normalize if it's a string
+    """
+    @brief Converts a Polars data type to a valid ClickHouse column type.
+
+    This function normalizes the input dtype, whether it's a string (e.g., "Utf8"),
+    a Polars dtype class (e.g., pl.Int64), or an instantiated Polars dtype.
+
+    @param dtype The input data type (string, Polars class, or Polars dtype object).
+    @param nullable Whether to wrap the type in ClickHouse's Nullable().
+
+    @return A string representing the ClickHouse-compatible column type.
+
+    @throws ValueError If the dtype is not supported or recognized.
+    """
     if isinstance(dtype, str):
         dtype_map = {
             "String": "String",
@@ -16,7 +72,6 @@ def polars_to_clickhouse_dtype(dtype, nullable):
             raise ValueError(f"Unsupported string dtype: {dtype}")
         return f"Nullable({ch_type})" if nullable else ch_type
 
-    # Step 2: If it's a Polars dtype object or class
     if isinstance(dtype, type):
         dtype = dtype()
 
@@ -31,7 +86,20 @@ def polars_to_clickhouse_dtype(dtype, nullable):
 
     return f"Nullable({ch_type})" if nullable else ch_type
 
+
 def generate_clickhouse_table(table_name="benchmark.performance"):
+    """
+    @brief Generates a CREATE TABLE SQL statement for ClickHouse.
+
+    Converts the SCHEMA dictionary into a fully-typed ClickHouse DDL statement.
+    Each field is converted using polars_to_clickhouse_dtype().
+
+    @param table_name The name of the target ClickHouse table.
+
+    @return A multi-line SQL string to define the table in ClickHouse.
+
+    @note Uses MergeTree engine and orders by (Method, Timestamp).
+    """
     lines = []
 
     for name, (dtype, nullable) in SCHEMA.items():
@@ -42,6 +110,7 @@ def generate_clickhouse_table(table_name="benchmark.performance"):
 {chr(10).join(lines).rstrip(',')}
 ) ENGINE = MergeTree()
 ORDER BY (Method, Timestamp);"""
+
 
 if __name__ == "__main__":
     print(generate_clickhouse_table())

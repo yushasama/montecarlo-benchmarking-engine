@@ -3,26 +3,39 @@
 // ========================================
 /**
  * @file main.cpp
- * @brief CLI runner for benchmarking Monte Carlo methods.
+ * @brief CLI runner for benchmarking Monte Carlo simulation methods.
  *
- * Dispatches simulations by method (Sequential, Heap, Pool, SIMD).
+ * Launches π-estimation simulations using various memory and threading strategies.
+ * Allows selection of individual method or batch benchmarking across all methods.
  *
  * ## Usage
  * ```bash
- * ./montecarlo             # Run all methods (default trials)
- * ./montecarlo 5000000     # Run all methods with 5M trials
- * ./montecarlo 1e7 SIMD    # Run only SIMD
+ * ./montecarlo                     # Run all methods (default trials = 100M)
+ * ./montecarlo 5000000            # Run all methods with 5M trials
+ * ./montecarlo 1e7 SIMD           # Run only SIMD with 10M trials
  * ```
  *
  * ## CLI Arguments
- * - `argv[1]` = number of trials (optional)
- * - `argv[2]` = method: Sequential, Heap, Pool, SIMD, or All (optional)
+ * - `argv[1]` — Number of simulation trials (optional, default: 100_000_000)
+ * - `argv[2]` — Method name: `Sequential`, `Heap`, `Pool`, `SIMD`, or `All` (optional, default: All)
+ *
+ * ## Methods
+ * - Sequential:     Single-threaded naive implementation
+ * - Heap (Threaded): Threaded heap allocation per thread
+ * - Pool (Threaded): Threaded use of a bump allocator (fast reuse, aligned)
+ * - SIMD (Threaded): Threaded SIMD-enhanced Monte Carlo with vectorization
  *
  * ## Output
  * Each benchmark logs:
- * - π estimate
- * - Runtime in seconds + nanoseconds
-*/
+ * - Estimated π value
+ * - Runtime in seconds and nanoseconds
+ * - Total hits (inside circle) used to compute the estimate
+ *
+ * ## Notes
+ * - Uses fixed thread count (4) for parallel methods
+ * - AVX2/NEON support is detected at runtime and reported
+ * - Each threaded method aggregates results manually
+ */
 
 #include "montecarlo.hpp"
 #include "benchmark.hpp"
@@ -33,6 +46,12 @@
 #include <unordered_set>
 #include <vector>
 
+/**
+ * @brief Prints detected platform architecture and SIMD capability.
+ *
+ * Detects and logs support for AVX2 (x86) or NEON (ARM) at runtime.
+ * Helps validate compatibility for SIMD-accelerated paths.
+ */
 void print_arch_info() {
     std::cout << "[INFO] Detected platform: ";
     system("uname -m");
@@ -46,6 +65,19 @@ void print_arch_info() {
 #endif
 }
 
+/**
+ * @brief Entry point for running Monte Carlo simulations via CLI.
+ *
+ * Parses CLI arguments and dispatches benchmark runs using one of the
+ * available simulation methods: Sequential, Heap, Pool, SIMD, or All.
+ *
+ * Runs timing and aggregation logic per method and prints π estimates
+ * and execution times.
+ *
+ * @param argc Number of CLI arguments
+ * @param argv Array of CLI argument strings
+ * @return 0 on success, non-zero on invalid method or failure
+ */
 int main(int argc, char* argv[]) {
     print_arch_info();
 
@@ -96,6 +128,7 @@ int main(int argc, char* argv[]) {
         });
     }
 
+    
     if (method == "Pool" || method == "All") {
         benchmark("Pool (Threaded)", totalTrials, [&]() {
             std::vector<std::thread> threads;
@@ -112,6 +145,7 @@ int main(int argc, char* argv[]) {
 
             int totalHits = 0;
             for (auto ptr : results) {
+                // NOTE: No delete required — memory allocated from PoolAllocator
                 totalHits += *ptr;
             }
 
@@ -135,6 +169,7 @@ int main(int argc, char* argv[]) {
 
             int totalHits = 0;
             for (auto ptr : results) {
+                // NOTE: No delete required — memory allocated from PoolAllocator
                 totalHits += *ptr;
             }
 
