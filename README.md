@@ -81,7 +81,7 @@ Benchmarked using an in-house `perf` suite, and tested via CI.
 
 ---
 
-## 🔧 Optimization Techniques
+## 🔧 Core Optimization Techniques
 
 This section breaks down the internal optimizations that power the engine, with special focus on SIMD, memory, and cache-sensitive design.
 
