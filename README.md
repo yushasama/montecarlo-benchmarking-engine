@@ -34,8 +34,8 @@ Benchmarked using an in-house `perf` suite, and tested via CI.
    * [Linux](#-linux)
    * [macOS](#-macos-with-homebrew)
    * [Windows (WSL2)](#-windows-wsl2---recommended)
-   * [Windows (MSVC)](#️-windows-msvc---experimental)
-   * [Windows (MinGW)](#️-windows-mingw--not)
+   * [Windows (MSVC)](#-windows-msvc--%EF%B8%8F-experimental)
+   * [Windows (MinGW)](#-windows-mingw---not-supported)
 8. [Building & Running](#building--running)
 9. [Benchmark Suite (Optional)](#-running-benchmark-suite-optional)
 10. [Docker + Grafana Integration](#-docker-optional-for-clickhouse--grafana-setup--data-visualization)
@@ -313,7 +313,7 @@ ninja -C build
 
 Some allocators or SIMD intrinsics may require patching.
 
-### 🪟 Windows (MinGW — ❌ Not)
+### 🪟 Windows (MinGW — ❌ Not Supported)
 MinGW is **not supported** due to lack of `std::aligned_alloc` and `std::allocator_traits` compatibility.
 
 ---
