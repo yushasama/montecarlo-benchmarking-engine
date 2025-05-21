@@ -1,0 +1,66 @@
+body::before {
+  content: "";
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+
+blockquote {
+    background: none !important;
+    border-left: 2px solid #555 !important;
+    margin: 0.5em 0 !important;
+    padding: 0.5em 1em !important;
+    font-style: normal !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    color: #ccc;
+}
+
+blockquote::before,
+blockquote::after {
+    content: none !important;
+}
+
+.fragment {     
+    position: relative;
+    overflow: visible;
+}
+
+.fragment .clipboard {
+  display: none;
+}
+
+.memdoc .fragment .clipboard {
+  display: inline-block;
+}
+
+.clipboard {
+  float: right;
+  max-width: 50%;
+  border-radius: 6px;
+  overflow: auto;   
+}
+
+.clipboard.success svg{
+  fill: #ffffff;
+}
+
+#top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#projectrow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+
+#MSearchBox {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+  float: none !important;
+}

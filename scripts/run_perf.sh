@@ -2,82 +2,84 @@
 # ===========================================
 # run_perf.sh
 # ===========================================
-# @file run_perf.sh
-# @brief Dockerized perf benchmarker for Monte Carlo simulation engine
-#
-# Benchmarks simulation methods (SIMD, Pool, Heap, etc.) using `perf stat`,
-# and logs system performance metrics to structured logs (CSV, Parquet).
-#
-# === Metrics Logged ===
-#
-# Core Execution
-#   - cycles:              Total CPU clock cycles consumed
-#   - instr:               Total instructions executed
-#   - ipc:                 Instructions per cycle (efficiency metric)
-#   - cycles_per_trial:    Avg CPU cycles used per simulation trial
-#
-# Time
-#   - wall_time_s:         Real-world elapsed time (sec)
-#   - wall_time_ns:        Real-world elapsed time (nanoseconds, high-precision)
-#
-# Cache Accesses
-#   - l1_loads:            L1 data cache load attempts
-#   - l1_misses:           L1 cache load misses (ideal <5%)
-#   - l2_loads:            L2 cache load attempts (may not be supported)
-#   - l2_misses:           L2 cache load misses (may not be supported)
-#   - l3_loads:            Last-level (L3) cache loads (may not be supported)
-#   - l3_misses:           L3 misses (fallback to RAM = slow, may not be supported)
-#   - cache_loads:         Aggregated cache loads
-#   - cache_miss:          Aggregated cache misses
-#
-# Memory Paging
-#   - tlb_loads:           TLB accesses (address translation)
-#   - tlb_misses:          TLB misses (page walk penalty)
-#
-# Branch Prediction
-#   - branch_instr:        Total branch instructions
-#   - branch_misses:       Branch mispredictions (pipeline flushes)
-#
-# Derived
-#   - miss_per_trial:      Cache+TLB misses per trial (normalized locality metric)
-#
-# === Compatibility Notes (L2/L3 Caveats) ===
-#
-# Some performance counters are not consistently available across systems:
-#   - Intel: L2/L3 counters usually available as `L2-dcache-*`, `LLC-*`
-#   - AMD:   L2/L3 counters may be missing (Zen 3/4); use `perf list` to verify
-#   - Virtual machines and containers may block PMU access
-#
-# Always validate support using:
-#   $ perf list | grep -i l2
-#   $ lscpu     # check microarchitecture
-#
-# === ClickHouse Integration ===
-#
-# By default, results are inserted into ClickHouse at the end of each batch run.
-# To enable this:
-#   - You must first run: `make init` (first time setup) or `make up` (to start services)
-#   - Requires Docker and a running ClickHouse instance
-#
-# To skip ClickHouse insertion (e.g., CI, dry runs):
-#   ./run_perf.sh 50000000 SIMD insert_db=false
-#
-# === Usage ===
-#   ./run_perf.sh                             # Run all methods with default trials, insert to DB
-#   ./run_perf.sh 50000000                    # All methods, custom trials
-#   ./run_perf.sh SIMD                        # Single method, default trials
-#   ./run_perf.sh 50000000 Pool               # Custom trials and single method
-#   ./run_perf.sh 50000000 SIMD insert_db=false  # Run without inserting to ClickHouse
-#
-# === Output Files ===
-#   db/logs/batch_<BATCHID>/perf_<METHOD>_<TIMESTAMP>.csv
-#     → Raw perf stat output
-#
-#   db/logs/batch_<BATCHID>/perf_results_<METHOD>_<TIMESTAMP>_<BATCHID>.parquet
-#     → Parsed structured metrics for that method
-#
-#   db/logs/batch_<BATCHID>/perf_results_all_<BATCHID>.parquet
-#     → Combined metrics across all methods (for analysis or dashboarding)
+
+## \file run_perf.sh
+## \brief Dockerized perf benchmarker for Monte Carlo simulation engine
+##
+## \details
+## Benchmarks simulation methods (SIMD, Pool, Heap, etc.) using `perf stat`,
+## and logs system performance metrics to structured logs (CSV, Parquet).
+##
+## === Metrics Logged ===
+##
+## Core Execution
+##   - cycles:              Total CPU clock cycles consumed
+##   - instr:               Total instructions executed
+##   - ipc:                 Instructions per cycle (efficiency metric)
+##   - cycles_per_trial:    Avg CPU cycles used per simulation trial
+##
+## Time
+##   - wall_time_s:         Real-world elapsed time (sec)
+##   - wall_time_ns:        Real-world elapsed time (nanoseconds, high-precision)
+##
+## Cache Accesses
+##   - l1_loads:            L1 data cache load attempts
+##   - l1_misses:           L1 cache load misses (ideal <5%)
+##   - l2_loads:            L2 cache load attempts (may not be supported)
+##   - l2_misses:           L2 cache load misses (may not be supported)
+##   - l3_loads:            Last-level (L3) cache loads (may not be supported)
+##   - l3_misses:           L3 misses (fallback to RAM = slow, may not be supported)
+##   - cache_loads:         Aggregated cache loads
+##   - cache_miss:          Aggregated cache misses
+##
+## Memory Paging
+##   - tlb_loads:           TLB accesses (address translation)
+##   - tlb_misses:          TLB misses (page walk penalty)
+##
+## Branch Prediction
+##   - branch_instr:        Total branch instructions
+##   - branch_misses:       Branch mispredictions (pipeline flushes)
+##
+## Derived
+##   - miss_per_trial:      Cache+TLB misses per trial (normalized locality metric)
+##
+## === Compatibility Notes (L2/L3 Caveats) ===
+##
+## Some performance counters are not consistently available across systems:
+##   - Intel: L2/L3 counters usually available as `L2-dcache-*`, `LLC-*`
+##   - AMD:   L2/L3 counters may be missing (Zen 3/4); use `perf list` to verify
+##   - Virtual machines and containers may block PMU access
+##
+## Always validate support using:
+##   $ perf list | grep -i l2
+##   $ lscpu     # check microarchitecture
+##
+## === ClickHouse Integration ===
+##
+## By default, results are inserted into ClickHouse at the end of each batch run.
+## To enable this:
+##   - You must first run: `make init` (first time setup) or `make up` (to start services)
+##   - Requires Docker and a running ClickHouse instance
+##
+## To skip ClickHouse insertion (e.g., CI, dry runs):
+##   ./run_perf.sh 50000000 SIMD insert_db=false
+##
+## === Usage ===
+##   ./run_perf.sh                             # Run all methods with default trials, insert to DB
+##   ./run_perf.sh 50000000                    # All methods, custom trials
+##   ./run_perf.sh SIMD                        # Single method, default trials
+##   ./run_perf.sh 50000000 Pool               # Custom trials and single method
+##   ./run_perf.sh 50000000 SIMD insert_db=false  # Run without inserting to ClickHouse
+##
+## === Output Files ===
+##   db/logs/batch_<BATCHID>/perf_<METHOD>_<TIMESTAMP>.csv
+##     → Raw perf stat output
+##
+##   db/logs/batch_<BATCHID>/perf_results_<METHOD>_<TIMESTAMP>_<BATCHID>.parquet
+##     → Parsed structured metrics for that method
+##
+##   db/logs/batch_<BATCHID>/perf_results_all_<BATCHID>.parquet
+##     → Combined metrics across all methods (for analysis or dashboarding)
 
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

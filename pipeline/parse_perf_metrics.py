@@ -1,39 +1,45 @@
 # ===========================================
 # parse_perf_metrics.py
 # ===========================================
-#
-# @file parse_perf_metrics.py
-# @brief CLI flag generator from perf CSV output (perf stat -x,).
-#
-# Description:
-#   Parses Linux `perf stat` logs in CSV format and extracts a fixed set
-#   of performance metrics. Outputs these metrics as `--key value` shell
-#   arguments for downstream use in pipeline scripts or shell evaluation.
-#
-#   Metrics are mapped from perf event names (e.g., "cycles:u") into
-#   canonical CLI keys (e.g., CYCLES, IPC). Unsupported metrics are
-#   filled as "NA". Derived values like IPC and misses per trial are
-#   computed inline using safe arithmetic fallbacks.
-#
-# Output Format:
-#   CYCLES=123456789 INSTR=123456 IPC=1.23 ...
-#   (printed on a single line, space-separated, for eval)
-#
-# Example:
-#   $ eval $(python3 parse_perf_metrics.py perf_SIMD.csv 1000000)
-#   $ echo $CYCLES
-#
-# Usage:
-#   python3 parse_perf_metrics.py <perf_log.csv> <num_trials>
-#
-# Arguments:
-#   <perf_log.csv>    Path to perf CSV file (generated with `perf stat -x,`)
-#   <num_trials>      Number of simulation trials (for per-trial metrics)
-#
-# Notes:
-#   - L2/L3 metrics are set to "NA" unless manually filled in or enabled via raw PMU events.
-#   - This script is designed to be eval'd inline from a shell or used programmatically.
-#   - Output order matches expected schema in gen_perf_parquet_logs.py
+
+## \file parse_perf_metrics.py
+## \brief CLI flag generator from perf CSV output (`perf stat -x,`)
+##
+## \details
+## Parses Linux `perf stat` logs in CSV format and extracts a fixed set
+## of performance metrics. Outputs these metrics as `--key value` shell
+## arguments for downstream use in pipeline scripts or shell evaluation.
+##
+## Metrics are mapped from perf event names (e.g., `"cycles:u"`) into
+## canonical CLI keys (e.g., `CYCLES`, `IPC`). Unsupported metrics are
+## filled as `"NA"`. Derived values like IPC and misses per trial are
+## computed inline using safe arithmetic fallbacks.
+##
+## \par Output Format
+## \code
+## CYCLES=123456789 INSTR=123456 IPC=1.23 ...
+## \endcode
+## Printed as a single line, space-separated key-value flags, suitable for `eval`.
+##
+## \par Example
+## \code
+## $ eval $(python3 parse_perf_metrics.py perf_SIMD.csv 1000000)
+## $ echo $CYCLES
+## \endcode
+##
+## \par Usage
+## \code
+## python3 parse_perf_metrics.py <perf_log.csv> <num_trials>
+## \endcode
+##
+## \par Arguments
+## - `<perf_log.csv>` — Path to perf CSV file (from `perf stat -x,`)
+## - `<num_trials>` — Number of simulation trials (used for normalization)
+##
+## \note
+## - L2/L3 metrics are set to `"NA"` unless enabled manually via raw PMU events.
+## - Designed for use via `eval` in shell pipelines or programmatically via subprocess.
+## - Will safely skip unsupported perf fields and calculate derived metrics (e.g., IPC, miss rate).
 
 
 from pipeline.utils import safe_div
@@ -55,7 +61,7 @@ field_map = {
     "l2_loads": "NA",
     "l2_misses": "NA",
     "l3_loads": "NA",
-    "l3_misses": "NA",
+   "l3_misses": "NA",
     "tlb_loads": "dTLB-loads:u",
     "tlb_misses": "dTLB-load-misses:u",
     "branch_instr": "branch-instructions:u",

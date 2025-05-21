@@ -1,13 +1,28 @@
 
+WARNINGS = YES
+WARN_IF_UNDOCUMENTED = YES
+QUIET = NO
+
 PROJECT_NAME           = "Monte Carlo Benchmarking Engine"
 PROJECT_BRIEF = "High-performance SIMD Monte Carlo engine (AVX2/NEON) with custom memory allocators and perf logging."
 PROJECT_LOGO           = 
 OUTPUT_DIRECTORY       = docs
 GENERATE_HTML          = YES
+HTML_OUTPUT          = html
+
 
 # Input
-INPUT = README.md ./main.cpp ./benchmark.hpp ./pool.hpp ./montecarlo.hpp ./scripts/
+INPUT = README.md ./main.cpp ./benchmark.hpp ./pool.hpp ./montecarlo.hpp ./scripts/ ./pipeline
+
+EXCLUDE_PATTERNS = */__init__.py /__pycache__/*
+
 RECURSIVE = YES
+
+FILE_PATTERNS = *.cpp *.hpp *.py *.sh *.md
+
+EXTENSION_MAPPING = md=Markdown sh=Python py=Python
+
+GENERATE_TREEVIEW = YES
 
 # Output
 OUTPUT_DIRECTORY = docs
@@ -18,13 +33,48 @@ EXTRACT_ALL = YES
 # Markdown support
 USE_MDFILE_AS_MAINPAGE = README.md
 MARKDOWN_SUPPORT = YES
-EXTENSION_MAPPING = md=Markdown sh=Python
+MARKDOWN_ID_STYLE = GITHUB
 
 # Show undocumented members too
 SHOW_INCLUDE_FILES = YES
 GENERATE_LATEX = NO
-GENERATE_HTML = YES
 
-HTML_STYLESHEET = docs/themes/doxygen-awesome-css/doxygen-awesome.css
-HTML_EXTRA_STYLESHEET = docs/custom.css
+# Theme
+# HTML_STYLESHEET = docs/themes/doxygen-awesome-css/doxygen-awesome.css
+# HTML_EXTRA_FILES = docs/themes/doxygen-awesome-css/doxygen-awesome-darkmode-toggle.js
+HTML_EXTRA_STYLESHEET = docs/themes/custom.css
+# docs/themes/doxygen-awesome-css/custom.css
+# HTML_COLORSTYLE = DARK
+
+
+# Python Specific Settings - CRITICAL
+OPTIMIZE_OUTPUT_JAVA = YES 
+PYTHON_DOCSTRING       = YES
+JAVADOC_AUTOBRIEF      = YES
+EXTRACT_ALL            = YES
+TAB_SIZE               = 4
+MULTILINE_CPP_IS_BRIEF = NO
+
+# Show everything even if undocumented
+EXTRACT_ALL = YES
+EXTRACT_PRIVATE = YES
+EXTRACT_STATIC = YES
+EXTRACT_LOCAL_CLASSES = YES
+
+# Source file types
+FILE_PATTERNS = *.cpp *.hpp *.py *.sh *.md
+
+# Python 
+PYTHON_DOCSTRING = YES
+OPTIMIZE_OUTPUT_JAVA = YES
+
+# Javadoc-style brief parsing
+JAVADOC_AUTOBRIEF = YES
+
+#  Add custom footer,
 HTML_COLORSTYLE = DARK
+
+# Better rendering
+SEARCHENGINE = YES
+SOURCE_BROWSER = YES
+INLINE_SOURCES = YES

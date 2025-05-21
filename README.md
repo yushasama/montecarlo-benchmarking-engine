@@ -1,4 +1,4 @@
-# Monte Carlo Benchmark Engine
+# About
 
 [![CI](https://github.com/yushasama/montecarlo-benchmarking-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/yushasama/montecarlo-benchmarking-engine/actions)
 
@@ -19,7 +19,7 @@ Benchmarked using an in-house `perf` suite, and tested via CI.
 ## 📚 Table of Contents
 
 1. [Features](#-features)
-2. [Core Optimization Strategies](#-optimization-strategies)
+2. [Core Optimization Techniques](#-core-optimization-techniques)
    * [Distance Check Formula](#1-distance-check-formula)
    * [SIMD](#2-simd-accelerated-trial-execution)
    * [Bitmasking](#3-bitmasking-fast-hit-counting-with-no-branches)
@@ -30,12 +30,12 @@ Benchmarked using an in-house `perf` suite, and tested via CI.
 5. [Tips for Reviewers / Recruiters](#-tip-for-reviewers--recruiters)
 6. [Requirements](#requirements)
 7. [Setup Instructions](#setup-instructions)
-
    * [Arch Linux](#-arch-linux)
    * [Linux](#-linux)
    * [macOS](#-macos-with-homebrew)
-   * [Windows (WSL2)](#-windows-wsl2--recommended)
-   * [Windows (MSVC)](#️-windows-msvc--experimental)
+   * [Windows (WSL2)](#-windows-wsl2---recommended)
+   * [Windows (MSVC)](#️-windows-msvc---experimental)
+   * [Windows (MinGW)](#️-windows-mingw--not)
 8. [Building & Running](#building--running)
 9. [Benchmark Suite (Optional)](#-running-benchmark-suite-optional)
 10. [Docker + Grafana Integration](#-docker-optional-for-clickhouse--grafana-setup--data-visualization)
@@ -81,13 +81,9 @@ Benchmarked using an in-house `perf` suite, and tested via CI.
 
 ---
 
-### 🔧 Core Optimization Strategies
+## 🔧 Optimization Techniques
 
 This section breaks down the internal optimizations that power the engine, with special focus on SIMD, memory, and cache-sensitive design.
-
----
-
-## Core Optimizations
 
 ### 1. **Distance Check Formula**
 
@@ -307,7 +303,7 @@ sudo apt install cmake ninja-build clang python3-pip
 > ✅ Clang and AVX2 work on WSL with native Linux tooling.
 > ❌ Direct Windows builds are not supported due to lack of `std::aligned_alloc` and allocator trait compatibility.
 
-### ⚠️ Windows (MSVC — Experimental)
+### 🪟 Windows (MSVC — ⚠️ Experimental)
 Partial support via Ninja inside Developer Prompt:
 
 ```
@@ -317,7 +313,7 @@ ninja -C build
 
 Some allocators or SIMD intrinsics may require patching.
 
-### ❌ Windows (MinGW)
+### 🪟 Windows (MinGW — ❌ Not)
 MinGW is **not supported** due to lack of `std::aligned_alloc` and `std::allocator_traits` compatibility.
 
 ---

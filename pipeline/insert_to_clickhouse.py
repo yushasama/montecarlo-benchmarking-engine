@@ -1,27 +1,28 @@
 # ===========================================
 # insert_to_clickhouse.py
 # ===========================================
-#
-# @file insert_clickhouse.py
-# @brief Inserts filtered benchmarking logs into a ClickHouse database.
-#
-# Description:
-#   This script reads a Parquet dataset, filters it by BatchID, and inserts
-#   the matching records into the `benchmark.performance` table in ClickHouse.
-#   It uses the clickhouse-driver to perform inserts and ensures that the
-#   table schema matches the format defined in `pipeline.schema`.
-#
-# Usage:
-#   $ python3 insert_to_clickhouse.py --batchid <BATCH_ID>
-#
-# Example:
-#   $ python3 insert_to_clickhouse.py --batchid "batch_202405"
-#
-# Notes:
-#   - ClickHouse connection parameters are loaded from `.env`via `scripts/config.py`
-#   - The Parquet file path is set in `DB_PATH`
-#   - You may call `insert_batch(batch_id)` directly from other scripts or notebooks
-#
+
+## \file insert_to_clickhouse.py
+## \brief Inserts filtered benchmarking logs into a ClickHouse database.
+## 
+## \details
+## \par Description
+##     This script reads a Parquet dataset, filters it by BatchID, and inserts
+##     the matching records into the `benchmark.performance` table in ClickHouse.
+##     It uses the clickhouse-driver to perform inserts and ensures that the
+##     table schema matches the format defined in `pipeline.schema`.
+## 
+## \par Usage
+##     $ python3 insert_to_clickhouse.py --batchid <BATCH_ID>
+## 
+## \par Example
+##     $ python3 insert_to_clickhouse.py --batchid "batch_202405"
+## 
+## \par Notes
+##     - ClickHouse connection parameters are loaded from `.env`via `scripts/config.py`
+##     - The Parquet file path is set in `DB_PATH`
+##     - You may call `insert_batch(batch_id)` directly from other scripts or notebooks
+
 
 import argparse
 import polars as pl
@@ -32,8 +33,7 @@ from scripts.config import *
 
 
 def insert_batch(batch_id: str) -> None:
-    """
-    @brief Filters and inserts a batch of records into ClickHouse.
+    """!Filters and inserts a batch of records into ClickHouse.
 
     Loads data from the Parquet file at DB_PATH, filters by BatchID,
     and inserts the resulting records into the `benchmark.performance` table.
@@ -67,8 +67,7 @@ def insert_batch(batch_id: str) -> None:
 
 
 def main():
-    """
-    @brief CLI entrypoint for inserting a batch into ClickHouse.
+    """!CLI entrypoint for inserting a batch into ClickHouse.
 
     Parses --batchid from command-line arguments and performs the insert.
     """

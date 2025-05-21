@@ -2,33 +2,35 @@
 # ===========================================
 # setup.py
 # ===========================================
-#
-# @file setup.py
-# @brief CLI utility to initialize ClickHouse + Grafana for benchmark pipeline.
-#
-# Description:
-#   This script handles the full setup flow for the benchmark environment:
-#     - Starts ClickHouse and Grafana via Docker Compose (optional)
-#     - Waits for ClickHouse to become ready
-#     - Creates database and table schema using `schema_to_clickhouse.py`
-#     - Loads benchmarking data from either:
-#         - A sample Parquet file (`samples/db_sample.parquet`)
-#         - A user-generated Parquet log (`db/db.parquet`)
-#
-# Usage:
-#   python3 setup.py [--docker-compose] [--setup-clickhouse] [--load-from-sample | --load-from-db]
-#
-# Options:
-#   --docker-compose     Start ClickHouse and Grafana with Docker Compose
-#   --setup-clickhouse   Explicitly create the ClickHouse database and performance table
-#   --load-from-sample   Load data from `samples/db_sample.parquet` (overwrites DB)
-#   --load-from-db       Load data from existing `db/db.parquet` file
-#
-# Notes:
-#   - Configuration is loaded from `.env` via `scripts/config.py`
-#   - ClickHouse and Grafana must be available via Docker if `--docker-compose` is used
-#   - Requires `clickhouse-driver`, `polars`, and Docker CLI to be installed
-#
+
+## \file setup.py
+## \brief CLI utility to initialize ClickHouse + Grafana for benchmark pipeline.
+##
+## \details
+## This script handles the full setup flow for the benchmark environment:
+## - Starts ClickHouse and Grafana via Docker Compose (optional)
+## - Waits for ClickHouse to become ready
+## - Creates database and table schema using `schema_to_clickhouse.py`
+## - Loads benchmarking data from either:
+##   - A sample Parquet file (`samples/db_sample.parquet`)
+##   - A user-generated Parquet log (`db/db.parquet`)
+##
+## \par Usage
+## \code
+## python3 scripts.setup [--docker-compose] [--setup-clickhouse] [--load-from-sample | --load-from-db]
+## \endcode
+##
+## \par Options
+## - `--docker-compose` — Start ClickHouse and Grafana with Docker Compose  
+## - `--setup-clickhouse` — Explicitly create the ClickHouse database and performance table  
+## - `--load-from-sample` — Load data from `samples/db_sample.parquet` (overwrites DB)  
+## - `--load-from-db` — Load data from existing `db/db.parquet` file  
+##
+## \par Notes
+## - Configuration is loaded from `.env` via `scripts/config.py`
+## - ClickHouse and Grafana must be available via Docker if `--docker-compose` is used
+## - Requires `clickhouse-driver`, `polars`, and Docker CLI to be installed
+
 
 import argparse
 import subprocess
@@ -46,22 +48,21 @@ from scripts.config import *
 
 
 def log(msg: str):
-    """
-    @brief Prints an info message to stdout.
-    @param msg The message string.
+    """!Prints an info message to stdout.
+
+    \param msg The message string.
+    \return None
     """
     print(f"[INFO] {msg}")
 
 def err(msg: str):
-    """
-    @brief Prints an error message to stdout.
+    """!Prints an error message to stdout.
     @param msg The message string.
     """
     print(f"[ERROR] {msg}")
 
 def run_command(cmd: str):
-    """
-    @brief Executes a shell command with logging.
+    """!Executes a shell command with logging.
     @param cmd The command string to run.
     @throws subprocess.CalledProcessError if the command fails.
     """
@@ -69,8 +70,7 @@ def run_command(cmd: str):
     subprocess.run(cmd, shell=True, check=True)
 
 def wait_for_clickhouse() -> Client:
-    """
-    @brief Waits for ClickHouse server to become ready, retries for up to 30 attempts.
+    """!Waits for ClickHouse server to become ready, retries for up to 30 attempts.
     @return A connected ClickHouse Client instance.
     @throws RuntimeError if ClickHouse doesn't respond after all attempts.
     """
@@ -91,8 +91,7 @@ def wait_for_clickhouse() -> Client:
     raise RuntimeError("ClickHouse did not start after 30 attempts.")
 
 def setup_clickhouse(client: Client):
-    """
-    @brief Creates the ClickHouse database and performance table if they don't exist.
+    """!Creates the ClickHouse database and performance table if they don't exist.
     @param client The connected ClickHouse client.
     """
     log("Setting up ClickHouse database and table.")
@@ -101,8 +100,7 @@ def setup_clickhouse(client: Client):
     log("Schema loaded into ClickHouse.")
 
 def load_db_to_clickhouse(client: Client, db_path: Path):
-    """
-    @brief Wipes previous data and loads data from a Parquet file into ClickHouse.
+    """!Wipes previous data and loads data from a Parquet file into ClickHouse.
 
     Casts data using the shared schema and inserts it into the benchmark.performance table.
     Existing table data will be truncated.
@@ -134,8 +132,7 @@ def load_db_to_clickhouse(client: Client, db_path: Path):
     
 
 def main():
-    """
-    @brief CLI entrypoint. Parses arguments and coordinates Docker, schema setup, and data loading.
+    """!CLI entrypoint. Parses arguments and coordinates Docker, schema setup, and data loading.
     """
     parser = argparse.ArgumentParser(description="Setup and load benchmark data into ClickHouse")
     parser.add_argument("--load-from-sample", action="store_true", help="Setup and restore from db_sample.parquet")

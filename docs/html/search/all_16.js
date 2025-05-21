@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['table_0',['📋 Makefile Command Table',['../index.html#autotoc_md-makefile-command-table',1,'']]],
+  ['table_20of_20contents_1',['📚 Table of Contents',['../index.html#autotoc_md-table-of-contents',1,'']]],
+  ['techniques_2',['Techniques',['../index.html#autotoc_md-optimization-techniques',1,'🔧 Optimization Techniques'],['../montecarlo_8hpp.html#core-optimization-techniques',1,'Core Optimization Techniques']]],
+  ['thread_20local_20everything_20no_20locks_20strong_3',['5. &lt;strong&gt;Thread-Local Everything (No Locks)&lt;/strong&gt;',['../index.html#autotoc_md5-thread-local-everything-no-locks',1,'']]],
+  ['thread_20local_20memory_20allocator_4',['2. Thread-Local Memory Allocator',['../montecarlo_8hpp.html#autotoc_md2-thread-local-memory-allocator',1,'']]],
+  ['thread_20local_20prng_5',['1. Thread-Local PRNG',['../montecarlo_8hpp.html#autotoc_md1-thread-local-prng',1,'']]],
+  ['thread_20safety_20and_20parallelism_20model_6',['Thread Safety and Parallelism Model',['../montecarlo_8hpp.html#thread-safety-and-parallelism-model',1,'']]],
+  ['threading_20strategy_7',['Threading Strategy',['../montecarlo_8hpp.html#threading-strategy',1,'']]],
+  ['time_8',['Embedded Systems / DSP / Real-Time',['../pool_8hpp.html#embedded-systems--dsp--real-time',1,'']]],
+  ['tip_20for_20reviewers_20recruiters_9',['💡 Tip for Reviewers / Recruiters',['../index.html#autotoc_md-tip-for-reviewers--recruiters',1,'']]],
+  ['to_5fclean_10',['to_clean',['../namespacepipeline_1_1parse__perf__metrics.html#a9b570b046a68001d05d9b279ecf17604',1,'pipeline::parse_perf_metrics']]],
+  ['trading_20hft_11',['Trading HFT',['../pool_8hpp.html#high-frequency-trading-hft',1,'High-Frequency Trading (HFT)'],['../index.html#real-world-analogy-high-frequency-trading-hft',1,'Real-World Analogy: High-Frequency Trading (HFT)']]],
+  ['trial_20execution_20strong_12',['2. &lt;strong&gt;SIMD-Accelerated Trial Execution&lt;/strong&gt;',['../index.html#autotoc_md2-simd-accelerated-trial-execution',1,'']]],
+  ['trials_13',['TRIALS',['../namespacescripts_1_1run__perf.html#a593fdeea5b74af050b65cc4a82f86aaf',1,'scripts::run_perf']]],
+  ['trials_14',['trials',['../namespacepipeline_1_1parse__perf__metrics.html#a6cfbf004520f961847bb8ad608b3e6ea',1,'pipeline::parse_perf_metrics']]],
+  ['tt_15',['tt',['../index.html#autotoc_md-environment-configuration-env',1,'📄 Environment Configuration (&lt;tt&gt;.env&lt;/tt&gt;)'],['../montecarlo_8hpp.html#heap-allocation-montecarlopi_heap',1,'Heap Allocation (&lt;tt&gt;monteCarloPI_HEAP&lt;/tt&gt;)'],['../montecarlo_8hpp.html#pool-allocation-montecarlopi_pool--simd',1,'Pool Allocation (&lt;tt&gt;monteCarloPI_POOL&lt;/tt&gt; / &lt;tt&gt;SIMD&lt;/tt&gt;)']]],
+  ['tt_20env_20tt_16',['📄 Environment Configuration (&lt;tt&gt;.env&lt;/tt&gt;)',['../index.html#autotoc_md-environment-configuration-env',1,'']]],
+  ['tt_20env_20tt_20variables_17',['Default &lt;tt&gt;.env&lt;/tt&gt; Variables',['../index.html#default-env-variables',1,'']]],
+  ['tt_20montecarlopi_5fheap_20tt_18',['Heap Allocation (&lt;tt&gt;monteCarloPI_HEAP&lt;/tt&gt;)',['../montecarlo_8hpp.html#heap-allocation-montecarlopi_heap',1,'']]],
+  ['tt_20montecarlopi_5fpool_20tt_20tt_20simd_20tt_19',['Pool Allocation (&lt;tt&gt;monteCarloPI_POOL&lt;/tt&gt; / &lt;tt&gt;SIMD&lt;/tt&gt;)',['../montecarlo_8hpp.html#pool-allocation-montecarlopi_pool--simd',1,'']]],
+  ['tt_20simd_20tt_20',['Pool Allocation (&lt;tt&gt;monteCarloPI_POOL&lt;/tt&gt; / &lt;tt&gt;SIMD&lt;/tt&gt;)',['../montecarlo_8hpp.html#pool-allocation-montecarlopi_pool--simd',1,'']]],
+  ['tt_20tt_20simd_20tt_21',['Pool Allocation (&lt;tt&gt;monteCarloPI_POOL&lt;/tt&gt; / &lt;tt&gt;SIMD&lt;/tt&gt;)',['../montecarlo_8hpp.html#pool-allocation-montecarlopi_pool--simd',1,'']]],
+  ['tt_20variables_22',['Default &lt;tt&gt;.env&lt;/tt&gt; Variables',['../index.html#default-env-variables',1,'']]]
+];

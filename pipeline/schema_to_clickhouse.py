@@ -1,53 +1,56 @@
 # ===========================================
 # schema_to_clickhouse.py
 # ===========================================
-#
-# @file schema_to_clickhouse.py
-# @brief Converts Polars schema to ClickHouse-compatible SQL
-#
-# Description:
-#   Converts a shared Python/Polars schema definition into a ClickHouse-compatible
-#   CREATE TABLE statement. This allows seamless integration between data preprocessing
-#   with Polars and persistent storage in ClickHouse.
-#
-#   The schema is defined as a dictionary mapping field names to (dtype, nullable) pairs.
-#   Supported input dtypes include both string representations (e.g., "Utf8") and
-#   Polars type objects or classes (e.g., pl.Int64).
-#
-# Example Output:
-#   CREATE TABLE IF NOT EXISTS benchmark.performance (
-#       `Method` String,
-#       `Cycles` Int64,
-#       `IPC` Float64,
-#       ...
-#   ) ENGINE = MergeTree()
-#   ORDER BY (Method, Timestamp);
-#
-# Features:
-#   - Handles both string-based and Polars-native dtype declarations
-#   - Adds Nullable(...) wrappers where needed
-#   - Raises errors for unsupported or unrecognized dtypes
-#   - Keeps output consistent with the expected schema in `pipeline.schema`
-#
-# Usage:
-#   $ python3 schema_to_clickhouse.py
-#   → prints CREATE TABLE SQL for use in ClickHouse CLI
-#
-# Schema format expected:
-#   SCHEMA = {
-#       "FieldName": (pl.Int64, False),
-#       "OtherField": ("Utf8", True),
-#       ...
-#   }
-#
 
+## \file schema_to_clickhouse.py
+## \brief Converts Polars schema to ClickHouse-compatible SQL
+##
+## \details
+## Converts a shared Python/Polars schema definition into a ClickHouse-compatible
+## CREATE TABLE statement. This allows seamless integration between data preprocessing
+## with Polars and persistent storage in ClickHouse.
+##
+## The schema is defined as a dictionary mapping field names to (dtype, nullable) pairs.
+## Supported input dtypes include both string representations (e.g., "Utf8") and
+## Polars type objects or classes (e.g., pl.Int64).
+##
+## \par Example Output
+## \code
+## CREATE TABLE IF NOT EXISTS benchmark.performance (
+##     `Method` String,
+##     `Cycles` Int64,
+##     `IPC` Float64,
+##     ...
+## ) ENGINE = MergeTree()
+## ORDER BY (Method, Timestamp);
+## \endcode
+##
+## \par Features
+## - Handles both string-based and Polars-native dtype declarations
+## - Adds Nullable(...) wrappers where needed
+## - Raises errors for unsupported or unrecognized dtypes
+## - Keeps output consistent with the expected schema in `pipeline.schema`
+##
+## \par Usage
+## \code
+## $ python3 schema_to_clickhouse.py
+## → prints CREATE TABLE SQL for use in ClickHouse CLI
+## \endcode
+##
+## \par Expected Schema Format
+## \code{.py}
+## SCHEMA = {
+##     "FieldName": (pl.Int64, False),
+##     "OtherField": ("Utf8", True),
+##     ...
+## }
+## \endcode
 
 from pipeline.schema import SCHEMA
 import polars as pl
 
 def polars_to_clickhouse_dtype(dtype, nullable):
-    """
-    @brief Converts a Polars data type to a valid ClickHouse column type.
+    """!Converts a Polars data type to a valid ClickHouse column type.
 
     This function normalizes the input dtype, whether it's a string (e.g., "Utf8"),
     a Polars dtype class (e.g., pl.Int64), or an instantiated Polars dtype.
@@ -88,8 +91,7 @@ def polars_to_clickhouse_dtype(dtype, nullable):
 
 
 def generate_clickhouse_table(table_name="benchmark.performance"):
-    """
-    @brief Generates a CREATE TABLE SQL statement for ClickHouse.
+    """!Generates a CREATE TABLE SQL statement for ClickHouse.
 
     Converts the SCHEMA dictionary into a fully-typed ClickHouse DDL statement.
     Each field is converted using polars_to_clickhouse_dtype().

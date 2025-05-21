@@ -1,37 +1,38 @@
 # ===========================================
 # combine_batch_parquets.py
 # ===========================================
-#
-# @file combine_batch_parquets.py
-# @brief Combines multiple per-method parquet log files into a single file.
-#
-# Description:
-#   Scans a given batch directory for all `perf_results_*.parquet` files,
-#   excluding the output file itself. Merges them using vertical concat,
-#   sorts by "Timestamp", and saves the result as a single compressed parquet.
-#
-#   After merging, the result is also appended to a global historical
-#   file specified by `DB_PATH`, which is configured via `.env` and loaded
-#   in `scripts/config.py`.
-#
-# Compression:
-#   - All output parquet files are compressed using Zstandard (zstd).
-#
-# Usage:
-#   $ python3 combine_batch_parquets.py <batch_dir> <output_file>
-#
-# Arguments:
-#   <batch_dir>     Folder containing individual `.parquet` logs
-#   <output_file>   Path to final combined `.parquet` file
-#
-# Output:
-#   - A merged parquet file containing all batch results
-#   - Updated global Parquet DB with new rows appended
-#
-# Notes:
-#   - Global Parquet path is loaded from `.env` via `scripts/config.py`
-#   - This script uses `polars` for fast DataFrame operations and I/O
-#   - Intended to be run after `run_perf.sh` completes all method benchmarks
+
+## \file combine_batch_parquets.py
+## \brief Combines multiple per-method parquet log files into a single file.
+## 
+## \details 
+## \par Description:
+##     Scans a given batch directory for all `perf_results_*.parquet` files,
+##     excluding the output file itself. Merges them using vertical concat,
+##     sorts by "Timestamp", and saves the result as a single compressed parquet.
+##     
+##     After merging, the result is also appended to a global historical
+##     file specified by `DB_PATH`, which is configured via `.env` and loaded
+##     in `scripts/config.py`.
+## 
+## \par Compression:
+##     - All output parquet files are compressed using Zstandard (zstd).
+## 
+## \par Usage:
+##     $ python3 combine_batch_parquets.py <batch_dir> <output_file>
+## 
+## \par Arguments:
+##     <batch_dir>     Folder containing individual `.parquet` logs
+##     <output_file>   Path to final combined `.parquet` file
+## 
+## \par Output:
+##     - A merged parquet file containing all batch results
+##     - Updated global Parquet DB with new rows appended
+## 
+## \par Notes:
+##     - Global Parquet path is loaded from `.env` via `scripts/config.py`
+##     - This script uses `polars` for fast DataFrame operations and I/O
+##     - Intended to be run after `run_perf.sh` completes all method benchmarks
 
 
 from scripts.config import DB_PATH

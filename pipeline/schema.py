@@ -1,34 +1,35 @@
 # ===========================================
 # schema.py
 # ===========================================
-#
-# @file schema.py
-# @brief Defines the canonical schema used across ETL, validation, and ClickHouse ingestion.
-#
-# Description:
-#   This file defines the global SCHEMA dictionary that maps column names to Polars dtypes
-#   and nullability flags. It is used for:
-#     - Casting CSV inputs via safe_vector_cast()
-#     - Enforcing field consistency across benchmarks
-#     - Generating ClickHouse CREATE TABLE statements
-#
-# Format:
-#   SCHEMA = {
-#       "Column Name": (Polars DataType, is_nullable: bool),
-#       ...
-#   }
-#
-# Design Notes:
-#   - All timestamps use millisecond-resolution Datetime
-#   - Percent fields are stored as Float64 (0–100%)
-#   - L2/L3-related fields are nullable by default (may not be available on all CPUs)
-#   - Field names match CSV headers and ClickHouse columns exactly
+
+## \file schema.py
+## \brief Defines the canonical schema used across ETL, validation, and ClickHouse ingestion.
+## 
+## \details
+## \par Description
+##     This file defines the global SCHEMA dictionary that maps column names to Polars dtypes
+##     and nullability flags. It is used for:
+##     - Casting CSV inputs via safe_vector_cast()
+##     - Enforcing field consistency across benchmarks
+##     - Generating ClickHouse CREATE TABLE statements
+## 
+## \par Format
+##     SCHEMA = {
+##         "Column Name": (Polars DataType, is_nullable: bool),
+##         ...
+##     }
+## 
+## \par Design Notes
+##     - All timestamps use millisecond-resolution Datetime
+##     - Percent fields are stored as Float64 (0–100%)
+##     - L2/L3-related fields are nullable by default (may not be available on all CPUs)
+##     - Field names match CSV headers and ClickHouse columns exactly
 
 
 import polars as pl
 
-"""
-@brief Canonical schema used throughout the pipeline.
+
+"""!Canonical schema used throughout the pipeline.
 
 Each key represents a column name, and the value is a tuple:
 (dtype: pl.DataType, nullable: bool). This schema is used to:

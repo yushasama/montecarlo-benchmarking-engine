@@ -1,47 +1,49 @@
 # ===========================================
 # gen_perf_parquet_logs.py
 # ===========================================
-#
-# @file gen_perf_parquet_logs.py
-# @brief Generates perf benchmarking parquet from command-line arguments.
-#
-# Accepts raw performance metrics from `perf stat` as arguments.
-# Computes % miss rates for cache levels and TLB, as well as misses per trial.
-# Saves results to a timestamped `.parquet` file in a structured batch directory,
-# and also generates a global merged file if needed.
-#
-# ## Usage (example):
-# ```bash
-# python3 gen_perf_parquet_logs.py \
-#   --out_path "db/logs/batch_<BATCHID>/perf_results_<METHOD>_<TIMESTAMP>_<BATCHID>.parquet" \
-#   --timestamp "2025-05-13_17-00-20" \
-#   --batchid "a7d38b57" \
-#   --method "SIMD" \
-#   --trials 100000000 \
-#   --cycles 6010711137 \
-#   --instr 8123412345 \
-#   --ipc 1.35 \
-#   --wall_time_s 0.08058 \
-#   --wall_time_ns 80587148 \
-#   --cache_loads 100000 \
-#   --cache_miss 5000 \
-#   --l1_loads 10000000 \
-#   --l1_misses 30000 \
-#   --l2_loads 200000 \
-#   --l2_misses 10000 \
-#   --l3_loads 100000 \
-#   --l3_misses 8000 \
-#   --tlb_loads 1200 \
-#   --tlb_misses 80 \
-#   --branch_instr 700000000 \
-#   --branch_misses 50000 \
-#   --miss_per_trial 0.0009 \
-#   --cycles_per_trial 16.9609
-# ```
-#
-# ## Output:
-# - File: logs/batch_<batchid>_<timestamp>/perf_results_<method>_<timestamp>_<batchid>.parquet
-# - Format: compressed `zstd` parquet with labeled fields and derived metrics
+
+## \file gen_perf_parquet_logs.py
+## \brief Generates perf benchmarking parquet from command-line arguments.
+## 
+## \details
+## \par Description
+##     Accepts raw performance metrics from `perf stat` as arguments.
+##     Computes % miss rates for cache levels and TLB, as well as misses per trial.
+##     Saves results to a timestamped `.parquet` file in a structured batch directory,
+##     and also generates a global merged file if needed.
+## 
+## \par Usage (example)
+## ```bash
+## python3 gen_perf_parquet_logs.py \
+##   --out_path "db/logs/batch_<BATCHID>/perf_results_<METHOD>_<TIMESTAMP>_<BATCHID>.parquet" \
+##   --timestamp "2025-05-13_17-00-20" \
+##   --batchid "a7d38b57" \
+##   --method "SIMD" \
+##   --trials 100000000 \
+##   --cycles 6010711137 \
+##   --instr 8123412345 \
+##   --ipc 1.35 \
+##   --wall_time_s 0.08058 \
+##   --wall_time_ns 80587148 \
+##   --cache_loads 100000 \
+##   --cache_miss 5000 \
+##   --l1_loads 10000000 \
+##   --l1_misses 30000 \
+##   --l2_loads 200000 \
+##   --l2_misses 10000 \
+##   --l3_loads 100000 \
+##   --l3_misses 8000 \
+##   --tlb_loads 1200 \
+##   --tlb_misses 80 \
+##   --branch_instr 700000000 \
+##   --branch_misses 50000 \
+##   --miss_per_trial 0.0009 \
+##   --cycles_per_trial 16.9609
+## ```
+## 
+## \par Output
+##     - File: logs/batch_<batchid>_<timestamp>/perf_results_<method>_<timestamp>_<batchid>.parquet
+##     - Format: compressed `zstd` parquet with labeled fields and derived metrics
 
 
 from pipeline.utils import safe_vector_cast, safe_div_percent

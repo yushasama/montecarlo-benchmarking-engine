@@ -1,0 +1,23 @@
+body {
+    background-color: #14161c;
+}
+
+#MSearchBox {
+    background-color: #14161c;
+}
+
+div.clipboard {
+    display: always;
+    opacity: 1; !important
+    fill: #ffffff; !important
+}
+
+.clipboard svg {
+    fill: #ffffff !important;
+    opacity: 1 !important;
+    transition: none !important;
+}
+
+.clipboard {
+    fill: #ffffff;
+}
