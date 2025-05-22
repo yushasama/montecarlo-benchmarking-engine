@@ -25,24 +25,23 @@ Benchmarked using an in-house `perf` suite, and tested via CI.
    * [Bitmasking](#3-bitmasking-fast-hit-counting-with-no-branches)
    * [Memory Pool Allocator](#4-memory-optimization-pool-allocator)
    * [Thread-Local Design](#5-thread-local-everything-no-locks)
-3. [Real-World Analogy: HFT](#real-world-analogy-high-frequency-trading-hft)
-4. [Benchmark-Oriented Design Summary](#benchmark-oriented-design-summary)
-5. [Tips for Reviewers / Recruiters](#-tip-for-reviewers--recruiters)
-6. [Requirements](#requirements)
-7. [Setup Instructions](#setup-instructions)
+3. [Benchmark-Oriented Design Summary](#benchmark-oriented-design-summary)
+4. [Tips for Reviewers / Recruiters & Real World Examples](#-tip-for-reviewers--recruiters--real-world-examples)
+5. [Requirements](#requirements)
+6. [Setup Instructions](#setup-instructions)
    * [Arch Linux](#-arch-linux)
    * [Linux](#-linux)
    * [macOS](#-macos-with-homebrew)
    * [Windows (WSL2)](#-windows-wsl2---recommended)
    * [Windows (MSVC)](#-windows-msvc--%EF%B8%8F-experimental)
    * [Windows (MinGW)](#-windows-mingw---not-supported)
-8. [Building & Running](#building--running)
-9. [Benchmark Suite (Optional)](#-running-benchmark-suite-optional)
-10. [Docker + Grafana Integration](#-docker-optional-for-clickhouse--grafana-setup--data-visualization)
-11. [Perf Dashboard Setup (Docker + Makefile)](#️-perf-dashboard-setup-docker--makefile)
-12. [Environment Configuration](#-environment-configuration-env)
-13. [GitHub Actions CI](#-github-actions-ci)
-14. [Sample Benchmark Logs](#-performance-benchmark-snapshot)
+7. [Building & Running](#building--running)
+8. [Benchmark Suite (Optional)](#-running-benchmark-suite-optional)
+9. [Docker + Grafana Integration](#-docker-optional-for-clickhouse--grafana-setup--data-visualization)
+10. [Perf Dashboard Setup (Docker + Makefile)](#️-perf-dashboard-setup-docker--makefile)
+11. [Environment Configuration](#-environment-configuration-env)
+12. [GitHub Actions CI](#-github-actions-ci)
+13. [Sample Benchmark Logs](#-performance-benchmark-snapshot)
 
 ---
 
@@ -216,19 +215,6 @@ To maintain precision:
 
 * Remainder trials (`n % batch`) fall back to scalar logic
 * Ensures all `n` trials are run without vector masking complexity
-
----
-
-## Real-World Analogy: High-Frequency Trading (HFT)
-
-This memory model mirrors arena allocators used in HFT systems:
-
-* Allocate short-lived order/trade structs in a thread-local memory arena
-* Reset per-tick or per-frame
-* Avoid GC stalls or malloc overhead during latency-sensitive events
-
-**Why it works here:**
-Monte Carlo trials are **embarrassingly parallel** and short-lived — ideal for memory reuse and SIMD-style vectorization.
 
 ---
 
