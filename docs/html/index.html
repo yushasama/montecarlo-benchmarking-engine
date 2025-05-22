@@ -124,7 +124,7 @@ $(function(){initNavTree('index.html',''); initResizable(true); });
 📚 Table of Contents</h1>
 <ol type="1">
 <li><a class="el" href="#autotoc_md-features">Features</a></li>
-<li>Core Optimization Techniques<ul>
+<li><a class="el" href="#autotoc_md-core-optimization-techniques">Core Optimization Techniques</a><ul>
 <li><a class="el" href="#autotoc_md1-distance-check-formula">Distance Check Formula</a></li>
 <li><a class="el" href="#autotoc_md2-simd-accelerated-trial-execution">SIMD</a></li>
 <li><a class="el" href="#autotoc_md3-bitmasking-fast-hit-counting-with-no-branches">Bitmasking</a></li>
@@ -134,7 +134,7 @@ $(function(){initNavTree('index.html',''); initResizable(true); });
 </li>
 <li><a class="el" href="#real-world-analogy-high-frequency-trading-hft">Real-World Analogy: HFT</a></li>
 <li><a class="el" href="#benchmark-oriented-design-summary">Benchmark-Oriented Design Summary</a></li>
-<li><a class="el" href="#autotoc_md-tip-for-reviewers--recruiters">Tips for Reviewers / Recruiters</a></li>
+<li>Tips for Reviewers / Recruiters</li>
 <li><a class="el" href="#requirements">Requirements</a></li>
 <li><a class="el" href="#setup-instructions">Setup Instructions</a><ul>
 <li><a class="el" href="#autotoc_md-arch-linux">Arch Linux</a></li>
@@ -142,7 +142,7 @@ $(function(){initNavTree('index.html',''); initResizable(true); });
 <li><a class="el" href="#autotoc_md-macos-with-homebrew">macOS</a></li>
 <li><a class="el" href="#autotoc_md-windows-wsl2---recommended">Windows (WSL2)</a></li>
 <li>Windows (MSVC)</li>
-<li>Windows (MinGW)</li>
+<li><a class="el" href="#autotoc_md-windows-mingw---not-supported">Windows (MinGW)</a></li>
 </ul>
 </li>
 <li><a class="el" href="#building--running">Building &amp; Running</a></li>
@@ -189,8 +189,8 @@ $(function(){initNavTree('index.html',''); initResizable(true); });
 </li>
 </ul>
 <hr  />
-<h1><a class="anchor" id="autotoc_md-optimization-techniques"></a>
-🔧 Optimization Techniques</h1>
+<h1><a class="anchor" id="autotoc_md-core-optimization-techniques"></a>
+🔧 Core Optimization Techniques</h1>
 <p>This section breaks down the internal optimizations that power the engine, with special focus on SIMD, memory, and cache-sensitive design.</p>
 <h2><a class="anchor" id="autotoc_md1-distance-check-formula"></a>
 1. <b>Distance Check Formula</b></h2>
@@ -344,15 +344,31 @@ Benchmark-Oriented Design Summary</h1>
 <td class="markdownTableBodyNone">Scalar fallback   </td><td class="markdownTableBodyNone">Completes remaining trials without SIMD masking   </td></tr>
 </table>
 <hr  />
-<h2><a class="anchor" id="autotoc_md-tip-for-reviewers--recruiters"></a>
-💡 Tip for Reviewers / Recruiters</h2>
+<h2><a class="anchor" id="autotoc_md-tip-for-reviewers--recruiters--real-world-examples"></a>
+💡 Tip for Reviewers / Recruiters + Real World Examples</h2>
 <p>The memory, parallelism, and vectorization strategies in this engine directly reflect patterns used in:</p>
-<ul>
-<li><b>Market simulation platforms</b></li>
-<li><b>Order book matching engines</b></li>
-<li><b>ML Compilers (eg., Pytorch)</b></li>
-<li><b>HPC (High Performance Computing) workloads</b></li>
-</ul>
+<p><b>High Frequency Trading</b> HRT (Hudson River Trading), a high frequency trading firm, uses a pre-allocated pool to allow better usage huge pages to shave off nano seconds in trading operations. This is crucial as in HFT, every tiny unit of time can determine whether or not a profit or loss is made.</p>
+<p>&gt;HRT carefully manages memory allocation patterns and alignment, recognizing that poor memory management can lead to cache thrashing and significantly impact performance in latency-critical trading operations.</p>
+<p>This project mirrors this by using a bump-style memory pool allocator for linear memory growth, avoiding frequent dynamic allocations, as well as aligning memory to cache lines to reduce L1/L2 thrashing.</p>
+<p><a href="https://www.hudsonrivertrading.com/hrtbeat/low-latency-optimization-part-1/">🔗 Low Latency Optimizations by HRT Part 1</a> <a href="https://www.hudsonrivertrading.com/hrtbeat/low-latency-optimization-part-12">🔗 Low Latency Optimizations by HRT Part 2</a></p>
+<p><b>Order book matching engines</b> LMAX, a London-based forex exchange, uses pre-allocation memory for ring buffers instead of tradtional queues for event handling.</p>
+<p>&gt;As a result of these practices, overhead from GC (garbage collector) pressure and "contention in multi-threaded implementations." has been minimized.</p>
+<p>This project applies the same principle through pre-allocated memory, minimizing thread contention through thread-local memory pool allocators.</p>
+<p><a href="https://lmax-exchange.github.io/disruptor/disruptor.html#_memory_allocation">🔗 LMAX Disruptor's Whitepaper</a></p>
+<p><b>Machine Learning Compilers (eg., Pytorch JIT)</b> In the section, Best Practices for Backends, from the PyTorch developer docs, it is stated that</p>
+<p>&gt;"Compiled workloads are usually optimized by Single Instruction Multiple Data (SIMD) instruction sets."</p>
+<p>Similarly, this project employs SIMD insruction sets, specifically AVX2 instrinsics (eg: <code>_m256_*</code>), to batch compute dart hits, resulting in massive performance boost.</p>
+<p><a href="https://docs.pytorch.org/docs/stable/torch.compiler_best_practices_for_backends">🔗 Pytoch's Best Practices for Compiler Design</a></p>
+<p><b>Similarity Search (Meta's Faiss Library)</b> Faiss AKA Facebook AI Similarity Search is a hihgly optimized library that allows developers to search multi media documents in ways that tradtional database engines (SQL) do not support as strongly.</p>
+<p>This project follows Meta's low latency optimization strategies and for the very same purpose, computing distances.</p>
+<p>&gt;Namely, Meta uses multi-threading, SIMD vectorization, and popcount (bitmasking) to speed up distance computations.</p>
+<p>Exactly the same methods this project employs and for calculating distance, though Meta's distance computations are more complex!</p>
+<p><a href="https://engineering.fb.com/2017/03/29/data-infrastructure/faiss-a-library-for-efficient-similarity-search/">🔗 Meta's Blog on Faiss Library</a></p>
+<p><b>Video Processing (Netflix's VMAF)</b> Netflix uses VMAF as a video quality metric, originally designed purely for Netflix's streaming use case before its open source. Netflix's engineers has taken great efforts to successfully improve VMAF's performance:</p>
+<p>&gt;"Through low-level code optimization and vectorization, we sped up VMAF’s execution by more than 4x in the past."</p>
+<p>Specifically, these speed improvements were carried out by AVX2 &amp; AVX-512 intrisics. Note that AVX2 &amp; AVX-512 are respectively 256-bit and 512-bit registers.</p>
+<p>Through out this project, <code>_mm256_*</code> intrinsics are heavily used during the Monte Carlo simulation process and come from the AVX2 instruction set.</p>
+<p><a href="https://netflixtechblog.com/toward-a-better-quality-metric-for-the-video-community-7ed94e752a30">🔗 Netflix's VMAF Optimizations Blog</a></p>
 <hr  />
 <h1><a class="anchor" id="requirements"></a>
 Requirements</h1>
@@ -391,8 +407,8 @@ Setup Instructions</h1>
 <div class="fragment"><div class="line">cmake -G Ninja -B build</div>
 <div class="line">ninja -C build</div>
 </div><!-- fragment --><p>Some allocators or SIMD intrinsics may require patching.</p>
-<h2><a class="anchor" id="autotoc_md-windows-mingw---not"></a>
-🪟 Windows (MinGW — ❌ Not)</h2>
+<h2><a class="anchor" id="autotoc_md-windows-mingw---not-supported"></a>
+🪟 Windows (MinGW — ❌ Not Supported)</h2>
 <p>MinGW is <b>not supported</b> due to lack of <code>std::aligned_alloc</code> and <code>std::allocator_traits</code> compatibility.</p>
 <hr  />
 <h1><a class="anchor" id="building--running"></a>

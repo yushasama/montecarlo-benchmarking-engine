@@ -37,5 +37,6 @@ var searchData=
   ['strong_20thread_20local_20everything_20no_20locks_20strong_34',['5. &lt;strong&gt;Thread-Local Everything (No Locks)&lt;/strong&gt;',['../index.html#autotoc_md5-thread-local-everything-no-locks',1,'']]],
   ['suite_20optional_35',['📊 Running Benchmark Suite (Optional)',['../index.html#autotoc_md-running-benchmark-suite-optional',1,'']]],
   ['summary_36',['Benchmark-Oriented Design Summary',['../index.html#benchmark-oriented-design-summary',1,'']]],
-  ['systems_20dsp_20real_20time_37',['Embedded Systems / DSP / Real-Time',['../pool_8hpp.html#embedded-systems--dsp--real-time',1,'']]]
+  ['supported_37',['🪟 Windows (MinGW — ❌ Not Supported)',['../index.html#autotoc_md-windows-mingw---not-supported',1,'']]],
+  ['systems_20dsp_20real_20time_38',['Embedded Systems / DSP / Real-Time',['../pool_8hpp.html#embedded-systems--dsp--real-time',1,'']]]
 ];

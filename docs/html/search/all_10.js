@@ -17,7 +17,7 @@ var searchData=
   ['method_5ftimestamp_14',['METHOD_TIMESTAMP',['../namespacescripts_1_1run__perf.html#a7ffd453d0f8ec5f7a777385dd8e8250a',1,'scripts::run_perf']]],
   ['methods_15',['METHODS',['../namespacescripts_1_1run__perf.html#a026c5175fe2114e6cbda653e9fe6253d',1,'scripts::run_perf']]],
   ['methods_16',['Methods',['../montecarlo_8hpp.html#implemented-methods',1,'Implemented Methods'],['../main_8cpp.html#methods',1,'Methods']]],
-  ['mingw_20—_20❌_20not_17',['🪟 Windows (MinGW — ❌ Not)',['../index.html#autotoc_md-windows-mingw---not',1,'']]],
+  ['mingw_20—_20❌_20not_20supported_17',['🪟 Windows (MinGW — ❌ Not Supported)',['../index.html#autotoc_md-windows-mingw---not-supported',1,'']]],
   ['minimal_20cache_20line_20interference_18',['4. Minimal Cache Line Interference',['../montecarlo_8hpp.html#autotoc_md4-minimal-cache-line-interference',1,'']]],
   ['model_19',['Model',['../pool_8hpp.html#alignment-model',1,'Alignment Model'],['../montecarlo_8hpp.html#thread-safety-and-parallelism-model',1,'Thread Safety and Parallelism Model']]],
   ['model_20comparison_20',['Memory Model Comparison',['../montecarlo_8hpp.html#memory-model-comparison',1,'']]],

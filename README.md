@@ -246,14 +246,60 @@ Monte Carlo trials are **embarrassingly parallel** and short-lived — ideal for
 
 ---
 
-### 💡 Tip for Reviewers / Recruiters
+### 💡 Tip for Reviewers / Recruiters + Real World Examples
 
 The memory, parallelism, and vectorization strategies in this engine directly reflect patterns used in:
 
-* **Market simulation platforms**
-* **Order book matching engines**
-* **ML Compilers (eg., Pytorch)**
-* **HPC (High Performance Computing) workloads**
+**High Frequency Trading**
+ HRT (Hudson River Trading), a high frequency trading firm, uses a pre-allocated pool to allow better usage huge pages to shave off nano seconds in trading operations. This is crucial as in HFT, every tiny unit of time can determine whether or not a profit or loss is made. 
+
+ >HRT carefully manages memory allocation patterns and alignment, recognizing that poor memory management can lead to cache thrashing and significantly impact performance in latency-critical trading operations.
+
+ This project mirrors this by using a bump-style memory pool allocator for linear memory growth, avoiding frequent dynamic allocations, as well as aligning memory to cache lines to reduce L1/L2 thrashing.
+
+ [🔗 Low Latency Optimizations by HRT Part 1](https://www.hudsonrivertrading.com/hrtbeat/low-latency-optimization-part-1/)
+ [🔗 Low Latency Optimizations by HRT Part 2](https://www.hudsonrivertrading.com/hrtbeat/low-latency-optimization-part-12)
+
+**Order book matching engines**
+LMAX, a London-based forex exchange, uses pre-allocation memory for ring buffers instead of tradtional queues for event handling. 
+
+>As a result of these practices, overhead from GC (garbage collector) pressure and "contention in multi-threaded implementations." has been minimized.
+
+This project applies the same principle through pre-allocated memory, minimizing thread contention through thread-local memory pool allocators.
+
+[🔗 LMAX Disruptor's Whitepaper](https://lmax-exchange.github.io/disruptor/disruptor.html#_memory_allocation)
+
+**Machine Learning Compilers (eg., Pytorch JIT)**
+In the section, Best Practices for Backends, from the PyTorch developer docs, it is stated that 
+
+>"Compiled workloads are usually optimized by Single Instruction Multiple Data (SIMD) instruction sets."
+
+Similarly, this project employs SIMD insruction sets, specifically AVX2 instrinsics (eg: `_m256_*`), to batch compute dart hits, resulting in massive performance boost.
+
+[🔗 Pytoch's Best Practices for Compiler Design](https://docs.pytorch.org/docs/stable/torch.compiler_best_practices_for_backends)
+
+
+**Similarity Search (Meta's Faiss Library)**
+Faiss AKA Facebook AI Similarity Search is a hihgly optimized library that allows developers to search multi media documents in ways that tradtional database engines (SQL) do not support as strongly.
+
+This project follows Meta's low latency optimization strategies and for the very same purpose, computing distances.
+
+>Namely, Meta uses multi-threading, SIMD vectorization, and popcount (bitmasking) to speed up distance computations.
+
+Exactly the same methods this project employs and for calculating distance, though Meta's distance computations are more complex!
+
+[🔗 Meta's Blog on Faiss Library](https://engineering.fb.com/2017/03/29/data-infrastructure/faiss-a-library-for-efficient-similarity-search/)
+
+**Video Processing (Netflix's VMAF)**
+Netflix uses VMAF as a video quality metric, originally designed purely for Netflix's streaming use case before its open source. Netflix's engineers has taken great efforts to successfully improve VMAF's performance:
+
+>"Through low-level code optimization and vectorization, we sped up VMAF’s execution by more than 4x in the past."
+
+Specifically, these speed improvements were carried out by AVX2 & AVX-512 intrisics. Note that AVX2 & AVX-512 are respectively 256-bit and 512-bit registers.
+
+Through out this project,  `_mm256_*` intrinsics are heavily used during the Monte Carlo simulation process and come from the AVX2 instruction set.
+
+[🔗 Netflix's VMAF Optimizations Blog](https://netflixtechblog.com/toward-a-better-quality-metric-for-the-video-community-7ed94e752a30)
 
 ---
 

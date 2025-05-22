@@ -26,6 +26,6 @@ var searchData=
   ['config_2epy_23',['config.py',['../config_8py.html',1,'']]],
   ['configuration_20tt_20env_20tt_24',['📄 Environment Configuration (&lt;tt&gt;.env&lt;/tt&gt;)',['../index.html#autotoc_md-environment-configuration-env',1,'']]],
   ['contents_25',['📚 Table of Contents',['../index.html#autotoc_md-table-of-contents',1,'']]],
-  ['core_20optimization_20techniques_26',['Core Optimization Techniques',['../montecarlo_8hpp.html#core-optimization-techniques',1,'']]],
+  ['core_20optimization_20techniques_26',['Core Optimization Techniques',['../index.html#autotoc_md-core-optimization-techniques',1,'🔧 Core Optimization Techniques'],['../montecarlo_8hpp.html#core-optimization-techniques',1,'Core Optimization Techniques']]],
   ['counting_20with_20no_20branches_20strong_27',['3. &lt;strong&gt;Bitmasking: Fast Hit Counting with No Branches&lt;/strong&gt;',['../index.html#autotoc_md3-bitmasking-fast-hit-counting-with-no-branches',1,'']]]
 ];

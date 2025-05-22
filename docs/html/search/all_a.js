@@ -12,6 +12,7 @@ var searchData=
   ['event_5fto_5fkey_9',['event_to_key',['../namespacepipeline_1_1parse__perf__metrics.html#ae7c7afc15b0bc55af41da1e2de4d0443',1,'pipeline::parse_perf_metrics']]],
   ['everything_20no_20locks_20strong_10',['5. &lt;strong&gt;Thread-Local Everything (No Locks)&lt;/strong&gt;',['../index.html#autotoc_md5-thread-local-everything-no-locks',1,'']]],
   ['example_11',['Example',['../benchmark_8hpp.html#example',1,'Example'],['../montecarlo_8hpp.html#hft-example',1,'HFT Example'],['../pool_8hpp.html#usage-example',1,'Usage Example']]],
-  ['execution_20strong_12',['2. &lt;strong&gt;SIMD-Accelerated Trial Execution&lt;/strong&gt;',['../index.html#autotoc_md2-simd-accelerated-trial-execution',1,'']]],
-  ['experimental_13',['🪟 Windows (MSVC — ⚠️ Experimental)',['../index.html#autotoc_md-windows-msvc--️-experimental',1,'']]]
+  ['examples_12',['💡 Tip for Reviewers / Recruiters + Real World Examples',['../index.html#autotoc_md-tip-for-reviewers--recruiters--real-world-examples',1,'']]],
+  ['execution_20strong_13',['2. &lt;strong&gt;SIMD-Accelerated Trial Execution&lt;/strong&gt;',['../index.html#autotoc_md2-simd-accelerated-trial-execution',1,'']]],
+  ['experimental_14',['🪟 Windows (MSVC — ⚠️ Experimental)',['../index.html#autotoc_md-windows-msvc--️-experimental',1,'']]]
 ];

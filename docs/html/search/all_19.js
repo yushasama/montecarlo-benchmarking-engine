@@ -7,7 +7,7 @@ var searchData=
   ['why_20bitmasks_20and_20branchless_20logic_4',['Why Bitmasks and Branchless Logic?',['../montecarlo_8hpp.html#why-bitmasks-and-branchless-logic',1,'']]],
   ['why_20it_20matters_3a_5',['Why it matters:',['../index.html#why-it-matters',1,'']]],
   ['why_20use_20a_20bump_20allocator_6',['Why Use a Bump Allocator?',['../pool_8hpp.html#why-use-a-bump-allocator',1,'']]],
-  ['windows_20mingw_20—_20❌_20not_7',['🪟 Windows (MinGW — ❌ Not)',['../index.html#autotoc_md-windows-mingw---not',1,'']]],
+  ['windows_20mingw_20—_20❌_20not_20supported_7',['🪟 Windows (MinGW — ❌ Not Supported)',['../index.html#autotoc_md-windows-mingw---not-supported',1,'']]],
   ['windows_20msvc_20—_20⚠️_20experimental_8',['🪟 Windows (MSVC — ⚠️ Experimental)',['../index.html#autotoc_md-windows-msvc--️-experimental',1,'']]],
   ['windows_20wsl2_20—_20✅_20recommended_9',['🪟 Windows (WSL2 — ✅ Recommended)',['../index.html#autotoc_md-windows-wsl2---recommended',1,'']]],
   ['with_20homebrew_10',['🍎 macOS (with Homebrew)',['../index.html#autotoc_md-macos-with-homebrew',1,'']]],
@@ -15,7 +15,8 @@ var searchData=
   ['works_20—_20internals_12',['How It Works — Internals',['../pool_8hpp.html#how-it-works--internals',1,'']]],
   ['world_20analogy_3a_20high_20frequency_20trading_20hft_13',['Real-World Analogy: High-Frequency Trading (HFT)',['../index.html#real-world-analogy-high-frequency-trading-hft',1,'']]],
   ['world_20applications_14',['Real-World Applications',['../pool_8hpp.html#real-world-applications',1,'']]],
-  ['writes_15',['3. No Shared Writes',['../montecarlo_8hpp.html#autotoc_md3-no-shared-writes',1,'']]],
-  ['wsl_16',['Build (Linux/macOS/WSL)',['../index.html#build-linuxmacoswsl',1,'']]],
-  ['wsl2_20—_20✅_20recommended_17',['🪟 Windows (WSL2 — ✅ Recommended)',['../index.html#autotoc_md-windows-wsl2---recommended',1,'']]]
+  ['world_20examples_15',['💡 Tip for Reviewers / Recruiters + Real World Examples',['../index.html#autotoc_md-tip-for-reviewers--recruiters--real-world-examples',1,'']]],
+  ['writes_16',['3. No Shared Writes',['../montecarlo_8hpp.html#autotoc_md3-no-shared-writes',1,'']]],
+  ['wsl_17',['Build (Linux/macOS/WSL)',['../index.html#build-linuxmacoswsl',1,'']]],
+  ['wsl2_20—_20✅_20recommended_18',['🪟 Windows (WSL2 — ✅ Recommended)',['../index.html#autotoc_md-windows-wsl2---recommended',1,'']]]
 ];

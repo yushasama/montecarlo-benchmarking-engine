@@ -2,7 +2,7 @@ var index =
 [
     [ "📚 Table of Contents", "index.html#autotoc_md-table-of-contents", null ],
     [ "🧩 Features", "index.html#autotoc_md-features", null ],
-    [ "🔧 Optimization Techniques", "index.html#autotoc_md-optimization-techniques", [
+    [ "🔧 Core Optimization Techniques", "index.html#autotoc_md-core-optimization-techniques", [
       [ "Distance Check Formula", "index.html#autotoc_md1-distance-check-formula", null ],
       [ "SIMD-Accelerated Trial Execution", "index.html#autotoc_md2-simd-accelerated-trial-execution", [
         [ "AVX2 (x86-64)", "index.html#avx2-x86-64", null ],
@@ -19,7 +19,7 @@ var index =
     ] ],
     [ "Real-World Analogy: High-Frequency Trading (HFT)", "index.html#real-world-analogy-high-frequency-trading-hft", null ],
     [ "Benchmark-Oriented Design Summary", "index.html#benchmark-oriented-design-summary", [
-      [ "💡 Tip for Reviewers / Recruiters", "index.html#autotoc_md-tip-for-reviewers--recruiters", null ]
+      [ "💡 Tip for Reviewers / Recruiters + Real World Examples", "index.html#autotoc_md-tip-for-reviewers--recruiters--real-world-examples", null ]
     ] ],
     [ "Requirements", "index.html#requirements", null ],
     [ "Setup Instructions", "index.html#setup-instructions", [
@@ -28,7 +28,7 @@ var index =
       [ "🍎 macOS (with Homebrew)", "index.html#autotoc_md-macos-with-homebrew", null ],
       [ "🪟 Windows (WSL2 — ✅ Recommended)", "index.html#autotoc_md-windows-wsl2---recommended", null ],
       [ "🪟 Windows (MSVC — ⚠️ Experimental)", "index.html#autotoc_md-windows-msvc--️-experimental", null ],
-      [ "🪟 Windows (MinGW — ❌ Not)", "index.html#autotoc_md-windows-mingw---not", null ]
+      [ "🪟 Windows (MinGW — ❌ Not Supported)", "index.html#autotoc_md-windows-mingw---not-supported", null ]
     ] ],
     [ "Building & Running", "index.html#building--running", [
       [ "📊 Running Benchmark Suite (Optional)", "index.html#autotoc_md-running-benchmark-suite-optional", null ],
