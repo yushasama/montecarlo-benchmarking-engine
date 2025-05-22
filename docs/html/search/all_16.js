@@ -11,7 +11,7 @@ var searchData=
   ['time_8',['Embedded Systems / DSP / Real-Time',['../pool_8hpp.html#embedded-systems--dsp--real-time',1,'']]],
   ['tip_20for_20reviewers_20recruiters_20real_20world_20examples_9',['💡 Tip for Reviewers / Recruiters + Real World Examples',['../index.html#autotoc_md-tip-for-reviewers--recruiters--real-world-examples',1,'']]],
   ['to_5fclean_10',['to_clean',['../namespacepipeline_1_1parse__perf__metrics.html#a9b570b046a68001d05d9b279ecf17604',1,'pipeline::parse_perf_metrics']]],
-  ['trading_20hft_11',['Trading HFT',['../pool_8hpp.html#high-frequency-trading-hft',1,'High-Frequency Trading (HFT)'],['../index.html#real-world-analogy-high-frequency-trading-hft',1,'Real-World Analogy: High-Frequency Trading (HFT)']]],
+  ['trading_20hft_11',['High-Frequency Trading (HFT)',['../pool_8hpp.html#high-frequency-trading-hft',1,'']]],
   ['trial_20execution_20strong_12',['2. &lt;strong&gt;SIMD-Accelerated Trial Execution&lt;/strong&gt;',['../index.html#autotoc_md2-simd-accelerated-trial-execution',1,'']]],
   ['trials_13',['TRIALS',['../namespacescripts_1_1run__perf.html#a593fdeea5b74af050b65cc4a82f86aaf',1,'scripts::run_perf']]],
   ['trials_14',['trials',['../namespacepipeline_1_1parse__perf__metrics.html#a6cfbf004520f961847bb8ad608b3e6ea',1,'pipeline::parse_perf_metrics']]],

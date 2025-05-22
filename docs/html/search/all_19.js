@@ -13,10 +13,9 @@ var searchData=
   ['with_20homebrew_10',['🍎 macOS (with Homebrew)',['../index.html#autotoc_md-macos-with-homebrew',1,'']]],
   ['with_20no_20branches_20strong_11',['3. &lt;strong&gt;Bitmasking: Fast Hit Counting with No Branches&lt;/strong&gt;',['../index.html#autotoc_md3-bitmasking-fast-hit-counting-with-no-branches',1,'']]],
   ['works_20—_20internals_12',['How It Works — Internals',['../pool_8hpp.html#how-it-works--internals',1,'']]],
-  ['world_20analogy_3a_20high_20frequency_20trading_20hft_13',['Real-World Analogy: High-Frequency Trading (HFT)',['../index.html#real-world-analogy-high-frequency-trading-hft',1,'']]],
-  ['world_20applications_14',['Real-World Applications',['../pool_8hpp.html#real-world-applications',1,'']]],
-  ['world_20examples_15',['💡 Tip for Reviewers / Recruiters + Real World Examples',['../index.html#autotoc_md-tip-for-reviewers--recruiters--real-world-examples',1,'']]],
-  ['writes_16',['3. No Shared Writes',['../montecarlo_8hpp.html#autotoc_md3-no-shared-writes',1,'']]],
-  ['wsl_17',['Build (Linux/macOS/WSL)',['../index.html#build-linuxmacoswsl',1,'']]],
-  ['wsl2_20—_20✅_20recommended_18',['🪟 Windows (WSL2 — ✅ Recommended)',['../index.html#autotoc_md-windows-wsl2---recommended',1,'']]]
+  ['world_20applications_13',['Real-World Applications',['../pool_8hpp.html#real-world-applications',1,'']]],
+  ['world_20examples_14',['💡 Tip for Reviewers / Recruiters + Real World Examples',['../index.html#autotoc_md-tip-for-reviewers--recruiters--real-world-examples',1,'']]],
+  ['writes_15',['3. No Shared Writes',['../montecarlo_8hpp.html#autotoc_md3-no-shared-writes',1,'']]],
+  ['wsl_16',['Build (Linux/macOS/WSL)',['../index.html#build-linuxmacoswsl',1,'']]],
+  ['wsl2_20—_20✅_20recommended_17',['🪟 Windows (WSL2 — ✅ Recommended)',['../index.html#autotoc_md-windows-wsl2---recommended',1,'']]]
 ];

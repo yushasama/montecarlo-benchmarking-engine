@@ -132,9 +132,8 @@ $(function(){initNavTree('index.html',''); initResizable(true); });
 <li><a class="el" href="#autotoc_md5-thread-local-everything-no-locks">Thread-Local Design</a></li>
 </ul>
 </li>
-<li><a class="el" href="#real-world-analogy-high-frequency-trading-hft">Real-World Analogy: HFT</a></li>
 <li><a class="el" href="#benchmark-oriented-design-summary">Benchmark-Oriented Design Summary</a></li>
-<li>Tips for Reviewers / Recruiters</li>
+<li><a class="el" href="#autotoc_md-tip-for-reviewers--recruiters--real-world-examples">Tips for Reviewers / Recruiters &amp; Real World Examples</a></li>
 <li><a class="el" href="#requirements">Requirements</a></li>
 <li><a class="el" href="#setup-instructions">Setup Instructions</a><ul>
 <li><a class="el" href="#autotoc_md-arch-linux">Arch Linux</a></li>
@@ -312,16 +311,6 @@ Performance Impact:</h3>
 <li>Remainder trials (<code>n % batch</code>) fall back to scalar logic</li>
 <li>Ensures all <code>n</code> trials are run without vector masking complexity</li>
 </ul>
-<hr  />
-<h1><a class="anchor" id="real-world-analogy-high-frequency-trading-hft"></a>
-Real-World Analogy: High-Frequency Trading (HFT)</h1>
-<p>This memory model mirrors arena allocators used in HFT systems:</p>
-<ul>
-<li>Allocate short-lived order/trade structs in a thread-local memory arena</li>
-<li>Reset per-tick or per-frame</li>
-<li>Avoid GC stalls or malloc overhead during latency-sensitive events</li>
-</ul>
-<p><b>Why it works here:</b> Monte Carlo trials are <b>embarrassingly parallel</b> and short-lived — ideal for memory reuse and SIMD-style vectorization.</p>
 <hr  />
 <h1><a class="anchor" id="benchmark-oriented-design-summary"></a>
 Benchmark-Oriented Design Summary</h1>

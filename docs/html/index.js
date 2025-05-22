@@ -17,7 +17,6 @@ var index =
       [ "Thread-Local Everything (No Locks)", "index.html#autotoc_md5-thread-local-everything-no-locks", null ],
       [ "Scalar Fallback for Remainders", "index.html#autotoc_md6-scalar-fallback-for-remainders", null ]
     ] ],
-    [ "Real-World Analogy: High-Frequency Trading (HFT)", "index.html#real-world-analogy-high-frequency-trading-hft", null ],
     [ "Benchmark-Oriented Design Summary", "index.html#benchmark-oriented-design-summary", [
       [ "💡 Tip for Reviewers / Recruiters + Real World Examples", "index.html#autotoc_md-tip-for-reviewers--recruiters--real-world-examples", null ]
     ] ],

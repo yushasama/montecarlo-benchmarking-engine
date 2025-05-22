@@ -13,5 +13,5 @@ var searchData=
   ['for_20reviewers_20recruiters_20real_20world_20examples_10',['💡 Tip for Reviewers / Recruiters + Real World Examples',['../index.html#autotoc_md-tip-for-reviewers--recruiters--real-world-examples',1,'']]],
   ['formula_20strong_11',['1. &lt;strong&gt;Distance Check Formula&lt;/strong&gt;',['../index.html#autotoc_md1-distance-check-formula',1,'']]],
   ['fragmentation_20means_3a_12',['&quot;Fast, Reusable, Avoids Fragmentation&quot; Means:',['../montecarlo_8hpp.html#fast-reusable-avoids-fragmentation-means',1,'']]],
-  ['frequency_20trading_20hft_13',['Frequency Trading HFT',['../pool_8hpp.html#high-frequency-trading-hft',1,'High-Frequency Trading (HFT)'],['../index.html#real-world-analogy-high-frequency-trading-hft',1,'Real-World Analogy: High-Frequency Trading (HFT)']]]
+  ['frequency_20trading_20hft_13',['High-Frequency Trading (HFT)',['../pool_8hpp.html#high-frequency-trading-hft',1,'']]]
 ];
