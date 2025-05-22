@@ -315,6 +315,8 @@ sudo apt update
 sudo apt install cmake ninja-build clang
 ```
 
+---
+
 ### 🍎 macOS (with Homebrew)
 
 ```bash
@@ -335,6 +337,8 @@ sudo apt install cmake ninja-build clang python3-pip
 > ✅ Clang and AVX2 work on WSL with native Linux tooling.
 > ❌ Direct Windows builds are not supported due to lack of `std::aligned_alloc` and allocator trait compatibility.
 
+---
+
 ### 🪟 Windows (MSVC — ⚠️ Experimental)
 Partial support via Ninja inside Developer Prompt:
 
@@ -344,6 +348,8 @@ ninja -C build
 ```
 
 Some allocators or SIMD intrinsics may require patching.
+
+---
 
 ### 🪟 Windows (MinGW — ❌ Not Supported)
 MinGW is **not supported** due to lack of `std::aligned_alloc` and `std::allocator_traits` compatibility.
