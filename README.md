@@ -244,7 +244,7 @@ The memory, parallelism, and vectorization strategies in this engine directly re
  This project mirrors this by using a bump-style memory pool allocator for linear memory growth, avoiding frequent dynamic allocations, as well as aligning memory to cache lines to reduce L1/L2 thrashing.
 
  [🔗 Low Latency Optimizations by HRT Part 1](https://www.hudsonrivertrading.com/hrtbeat/low-latency-optimization-part-1/)
- [🔗 Low Latency Optimizations by HRT Part 2](https://www.hudsonrivertrading.com/hrtbeat/low-latency-optimization-part-12)
+ [🔗 Low Latency Optimizations by HRT Part 2](https://www.hudsonrivertrading.com/hrtbeat/low-latency-optimization-part-2)
 
 **Order book matching engines**
 LMAX, a London-based forex exchange, uses pre-allocation memory for ring buffers instead of tradtional queues for event handling. 
