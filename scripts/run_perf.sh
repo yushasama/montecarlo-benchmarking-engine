@@ -98,7 +98,7 @@ GLOBAL_TIMESTAMP=$(date "+%Y-%m-%d_%H-%M-%S")
 # -------- CLI Args --------
 ARG1="$1"
 ARG2="$2"
-$ARG3=$3
+ARG3="$3"
 
 INSERT_DB=true
 
