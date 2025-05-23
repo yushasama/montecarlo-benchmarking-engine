@@ -408,18 +408,38 @@ Note that `/scripts/run_perf.sh [TRIALS] [METHODS]` is to be treated the same as
 
 ## 🐋 Docker (Optional for ClickHouse + Grafana Setup / Data Visualization)
 
-> Used for dashboard visualization and log ingestion.
+> Used for dashboard visualization and log ingestion. 
 
 If you want to use the full monitoring pipeline:
+1. Use a supported OS ie: MacOS, Linux, or Windows (WSL only).
 
-1. Install Docker + Docker Compose
+2. Install Docker + Docker Compose
    👉 Follow instructions for your OS:
 
    * [Docker for Linux](https://docs.docker.com/engine/install/)
    * [Docker Desktop for macOS/Windows](https://www.docker.com/products/docker-desktop/)
 
 **Benchmark Suite Snapshot**
-![](https://files.catbox.moe/loir4s.png)
+![](https://files.catbox.moe/m5rige.png)
+
+**Example Setup:** 
+>Rename the provided `.env.sample` file to `.env` and change desired variables. Keeping it as default is recommended, but you may have to clear up ports if they are being used OR set them to available ports in your `.env` file.
+
+>Run `make init`, ONLY IF YOU'RE ON LINUX OTHERWISE RUN `make init_demo`. You may also run `make load_data` after `make init` if you have your own dataset, make sure that it aligns to the provided schema.
+
+>Note that running `make load_data` or `make load_demo` will clear your current data in Clickhouse and load with your demo data or existing `db.parquet`.
+
+>Open up `localhost:[YOUR PORT]` eg: `localhost:3000` for example and login with your Grafana credentials. By default, your Grafana login & password will be `admin`.
+
+>Open Dashboards -> Benchmark Performance Suite
+
+>If you wish to edit and save changes to the benchmark suite dashboard, you MUST export the JSON model and replace `"grafana/dashboards/perf_dashboards.json"` with it.
+
+
+For further information & customization, please refer to:
+* [Make File Command Table](#-makefile-command-table)
+* [Perf Dashboard Setup](#%EF%B8%8F-perf-dashboard-setup-docker--makefile)
+* [Environment Configuation](#-environment-configuration-env)
 
 ---
 
@@ -427,29 +447,38 @@ If you want to use the full monitoring pipeline:
 
 This project includes a `Makefile` to manage your local Docker environment for setting up Clickhouse and loading data, log ingestion + visualization via ClickHouse and Grafana.
 
+>Note that if you change your Grafana login credientials in your `.env` file, you must reset Grafana via `make reset_grafana_creds`.
+
 > 🧼 These commands manage everything from booting the stack to loading demo data and resetting volumes.
 
 ### 📋 Makefile Command Table
 
 | Command                 | Description                                                           |
 | ----------------------- | --------------------------------------------------------------------- |
-| `make start`            | 🐳 Start Docker containers (ClickHouse, Grafana)                      |
-| `make stop`             | 📦 Stop containers, **preserve data**                                 |
-| `make rebuild`          | 🔄 Restart + rebuild images (data preserved)                          |
-| `make reset_all`        | 🧼 Full reset (⚠️ **deletes volumes**) and rebuilds                   |
-| `make clean_all`        | 🧹 Remove Docker volumes + local data (dangerous!)                    |
-| `make clear_data`       | 📁 Deletes local simulation data only (`db/`)                         |
-| `make clear_parquets`   | 🧽 Deletes all local `.parquet` logs                                  |
-| `make logs`             | 📜 Streams Docker logs from all containers                            |
-| `make init`             | 🌱 Start stack and initialize ClickHouse schema                       |
-| `make init_demo`        | 🌸 Load sample data (`db_sample.parquet`) into ClickHouse             |
-| `make load_data`        | 📥 Load your current simulation log (`db/db.parquet`) into ClickHouse |
-| `make load_demo`        | 🧺 Load demo Parquet into `db/`, then into ClickHouse                 |
-| `make setup_clickhouse` | 🛠️ Manually reinitialize ClickHouse schema                           |
+| `make help`              | Show available commands                                            |
+| `make start`            | Start Docker containers (ClickHouse, Grafana)                      |
+| `make stop`             | Stop containers, **preserve data**                                 |
+| `make rebuild`          | Restart + rebuild images (data preserved)                          |
+| `make reset_all`        | Full reset (**deletes volumes**) and rebuilds                   |
+| `make clean_all`        | Remove Docker volumes + local data (dangerous!)                    |
+| `make clear_data`       | Deletes local simulation data only (`db/`)                         |
+| `make clear_parquets`   | Deletes all local `.parquet` logs                                  |
+| `make logs`             | Streams Docker logs from all containers                            |
+| `make init`             | Start stack and initialize ClickHouse schema                       |
+| `make init_demo`        | Load sample data (`db_sample.parquet`) into ClickHouse             |
+| `make load_data`        | Load your current simulation log (`db/db.parquet`) into ClickHouse |
+| `make load_demo`        | Load demo Parquet into `db/`, then into ClickHouse                 |
+| `make setup_clickhouse` | Manually reinitialize ClickHouse schema                            |
+| `make fix_clickhouse_ownership` | Fix ClickHouse volume permissions so it can boot           |
+| `reset_grafana_creds`   | Reset Grafana auth credentials                                     |
 
-> ⚠️ **Important:**
-> Any of the following commands will **overwrite all current ClickHouse data** by reloading from `DB_PATH`:
-> `make init_demo`, `make load_data`, `make load_demo`, or any command that invokes `scripts.setup --load-*`.
+
+ **⚠️ Important:**
+Any of the following commands will **overwrite all current ClickHouse data** by reloading from `DB_PATH`:
+`make init_demo`, `make load_data`, `make load_demo`, or any command that invokes `scripts.setup --load-*`
+
+If you get exit code `174` from clickhouse, run `make fix_clickhouse_ownership`.
+Debugging: `make logs` or `docker ps -a` (view attempted & working docker connections).
 
 ---
 
@@ -468,11 +497,6 @@ cp .env.sample .env
 ### Default `.env` Variables
 
 ```dotenv
-# ClickHouse
-CLICKHOUSE_USER=default
-CLICKHOUSE_PASSWORD=
-CLICKHOUSE_UID=clickhouse-datasource
-
 # For Python client
 CLICKHOUSE_HOST=localhost
 CLICKHOUSE_TCP_PORT=9000
@@ -494,7 +518,7 @@ SAMPLE_PATH=samples/db_sample.parquet
 > If you experience port conflicts (e.g., port 3000 is in use), either:
 >
 > * Kill the conflicting service
-> * Or **edit `.env`** to use alternate ports (and reflect those changes in your `docker-compose.yml`)
+> * Or **edit `.env`** to use alternate ports (and possibly reflect those changes in your `docker-compose.yml`)
 
 ---
 

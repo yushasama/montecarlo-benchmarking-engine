@@ -155,6 +155,12 @@ def main():
 
     if args.setup_clickhouse or args.docker_compose:
         setup_clickhouse(client)
+
+    if args.load_from_sample or args.load_from_db:
+        ## Create the database and table if they don't exist
+        log("Creating database and table if they don't exist.")
+        client.execute("CREATE DATABASE IF NOT EXISTS benchmark")
+        client.execute(generate_clickhouse_table())
         
     if args.load_from_sample:
         log(f"Loading from sample data: {SAMPLE_PATH}")
