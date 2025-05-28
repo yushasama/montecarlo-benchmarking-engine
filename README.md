@@ -216,6 +216,26 @@ To maintain precision:
 * Remainder trials (`n % batch`) fall back to scalar logic
 * Ensures all `n` trials are run without vector masking complexity
 
+### 7. **Parquet Export for Efficient Disk I/O**
+
+Human-readable formats like CSV are useful, but slow and bulky under scale. To optimize data persistence and post-simulation analytics:
+
+* Results are exported as both CSV (readability) and Parquet (columnar binary format)
+* Parquet reduces file size and improves write/read throughput significantly on large benchmark runs
+* Enables seamless integration with analytical databases, profilers, and observability stacks
+
+### 8. **ClickHouse Ingestion for Scalable Performance Analytics**
+
+Unlike traditional row-store databases (e.g., PostgreSQL, MySQL), ClickHouse stores data in a columnar format, which allows it to scan only the relevant columns during analytical queries—dramatically reducing I/O. It also uses vectorized execution and compression to maximize CPU efficiency and memory throughput, making it ideal for processing dense benchmarking telemetry at scale.
+
+To analyze performance trends across simulation runs:
+
+* Each run appends to `db/db.parquet` and ingests to Clickhouse (IF `insert_db=false` flag is  used with `scripts/run_perf.sh`). In turn, this maintains a local backup of our database while updating our Clickhouse database.
+* This serves as both a high-throughput ingest format and a persistent backup
+* ClickHouse enables millisecond-latency queries on multi-million-row benchmarking datasets
+* Combined with Grafana, this forms a full telemetry pipeline:
+  >[Engine → Metrics → Parquet → ClickHouse → Grafana]
+
 ---
 
 ## Benchmark-Oriented Design Summary
@@ -390,7 +410,7 @@ Results are logged in .parquet (primarily for effiency) and partial support for 
 chmod +x scripts/run_perf.sh
 ./scripts/run_perf.sh              # runs all methods with 1,000,000,000 trials
 ./scripts/run_perf.sh [TRIALS] [METHODS]
-./scripts/run_perf.sh 50000000 SIMD insert_db=false  # Skip ClickHouse inser
+./scripts/run_perf.sh 50000000 SIMD insert_db=false  # Skip ClickHouse inserts
 ```
 
 By default:
